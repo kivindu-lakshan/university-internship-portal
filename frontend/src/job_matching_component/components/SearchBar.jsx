@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FiSearch, FiSend, FiInfo } from 'react-icons/fi';
 
 // Search suggestions (mock data - could be fetched from API)
 const SEARCH_SUGGESTIONS = [
@@ -121,7 +122,7 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
             <form className="glass-panel" onSubmit={handleSubmit} style={{ marginBottom: 0 }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" htmlFor="job-search">
-                        🔍 Search Jobs
+                        <FiSearch style={{ marginRight: '8px' }} /> Search Jobs
                     </label>
                     
                     <div style={{ position: 'relative' }}>
@@ -164,16 +165,16 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
                         >
                             {isSearching || isLoading ? (
                                 <>
-                                    <span style={{ 
+                                    <span style={{
                                         display: 'inline-block',
                                         animation: 'spin 1s linear infinite',
                                         fontSize: '14px'
-                                    }}>🔄</span>
+                                    }}><FiSearch /></span>
                                     Searching
                                 </>
                             ) : (
                                 <>
-                                    🚀 Search
+                                    <FiSend style={{ marginRight: '6px' }} /> Search
                                 </>
                             )}
                         </button>
@@ -189,7 +190,9 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
                             alignItems: 'center',
                             gap: '8px'
                         }}>
-                            <span>💡 Tip: Use keywords like "React", "Remote", or company names</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <FiInfo size={14} /> Tip: Use keywords like "React", "Remote", or company names
+                            </span>
                         </div>
                     )}
                 </div>
@@ -225,7 +228,9 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px'
                     }}>
-                        💡 Search Suggestions
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                            <FiInfo /> Search Suggestions
+                        </div>
                     </div>
                     
                     {filteredSuggestions.map((suggestion, index) => (
@@ -250,7 +255,7 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
                             }}
                             onMouseEnter={() => setSelectedSuggestionIndex(index)}
                         >
-                            <span>🔍</span>
+                            <span><FiSearch /></span>
                             <span>{suggestion}</span>
                         </div>
                     ))}

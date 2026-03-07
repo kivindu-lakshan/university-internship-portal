@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FiTarget, FiBriefcase, FiMapPin, FiDollarSign, FiTrash2, FiSettings, FiGrid, FiSend } from 'react-icons/fi';
 
 // Salary range presets
 const SALARY_PRESETS = [
@@ -213,9 +214,12 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                     margin: 0,
                     fontSize: '18px',
                     fontWeight: '700',
-                    color: 'var(--secondary-800)'
+                    color: 'var(--secondary-800)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                 }}>
-                    🎯 Filter Jobs
+                    <FiTarget /> Filter Jobs
                 </h3>
                 
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -223,18 +227,18 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         <button
                             className="btn-secondary"
                             onClick={clearAllFilters}
-                            style={{ fontSize: '12px', padding: '6px 12px' }}
+                            style={{ fontSize: '12px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
                         >
-                            🗑️ Clear All
+                            <FiTrash2 size={14} /> Clear All
                         </button>
                     )}
                     
                     <button
                         className="btn-secondary"
                         onClick={() => setShowAdvanced(!showAdvanced)}
-                        style={{ fontSize: '12px', padding: '6px 12px' }}
+                        style={{ fontSize: '12px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
-                        {showAdvanced ? '📐 Basic' : '⚙️ Advanced'}
+                        {showAdvanced ? <><FiGrid size={14} /> Basic</> : <><FiSettings size={14} /> Advanced</>}
                     </button>
                 </div>
             </div>
@@ -286,7 +290,9 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                 marginBottom: '24px'
             }}>
                 <div className="form-group">
-                    <label className="form-label">💼 Job Type</label>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <FiBriefcase size={16} /> Job Type
+                    </label>
                     <select
                         className="form-input"
                         value={localFilters.jobType}
@@ -294,13 +300,15 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         style={{ cursor: 'pointer' }}
                     >
                         <option value="">All Job Types</option>
-                        <option value="Internship">🎓 Internship</option>
-                        <option value="Part-time">⏰ Part-time</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Part-time">Part-time</option>
                     </select>
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">📍 Location</label>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <FiMapPin size={16} /> Location
+                    </label>
                     <input
                         list="location-suggestions"
                         className="form-input"
@@ -318,7 +326,9 @@ export default function FilterPanel({ filters, onChange, onApply }) {
             
             {/* Salary Filter */}
             <div className="form-group">
-                <label className="form-label">💰 Salary Range</label>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <FiDollarSign size={16} /> Salary Range
+                </label>
                 
                 {!showAdvanced ? (
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
@@ -391,7 +401,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         padding: '12px 24px'
                     }}
                 >
-                    🚀 Apply Filters
+                    <FiSend /> Apply Filters
                 </button>
             </div>
             

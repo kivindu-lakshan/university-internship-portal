@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { FiBriefcase, FiBell, FiTrendingUp, FiSearch, FiBookmark, FiTarget, FiStar, FiEdit3, FiAlertTriangle, FiZap, FiRotateCw } from 'react-icons/fi';
 import { getRecommendedJobs, getSavedJobs } from '../../services/jobService';
 import { getNotifications } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -87,7 +87,6 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
                     {label}
                 </div>
                 
-                {trend && (
                     <div style={{
                         marginTop: '12px',
                         padding: '4px 8px',
@@ -95,9 +94,13 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
                         fontSize: '12px',
                         fontWeight: '600',
                         background: trend > 0 ? 'var(--success-500)20' : 'var(--error-500)20',
-                        color: trend > 0 ? 'var(--success-500)' : 'var(--error-500)'
+                        color: trend > 0 ? 'var(--success-500)' : 'var(--error-500)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px'
                     }}>
-                        {trend > 0 ? '↗️' : '↘️'} {Math.abs(trend)}% this week
+                        <FiTrendingUp style={{ transform: trend < 0 ? 'scaleY(-1)' : 'none' }} /> {Math.abs(trend)}% this week
                     </div>
                 )}
             </div>
@@ -113,9 +116,12 @@ function ActivityTimeline({ activities }) {
                 margin: '0 0 24px 0',
                 fontSize: '18px',
                 fontWeight: '700',
-                color: 'var(--secondary-800)'
+                color: 'var(--secondary-800)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
             }}>
-                📈 Recent Activity
+                <FiTrendingUp /> Recent Activity
             </h3>
             
             <div style={{ position: 'relative' }}>
@@ -194,28 +200,28 @@ function QuickActions({ onActionClick }) {
         { 
             id: 'search', 
             label: 'Search Jobs', 
-            icon: '🔍', 
+            icon: <FiSearch />, 
             color: 'var(--primary-500)',
             path: '/job-matching/search'
         },
         { 
             id: 'recommended', 
             label: 'View Recommendations', 
-            icon: '⭐', 
+            icon: <FiStar />, 
             color: 'var(--accent-500)',
             path: '/job-matching/recommended'
         },
         { 
             id: 'saved', 
             label: 'Saved Jobs', 
-            icon: '💾', 
+            icon: <FiBookmark />, 
             color: 'var(--success-500)',
             path: '/job-matching/saved'
         },
         { 
             id: 'notifications', 
             label: 'Notifications', 
-            icon: '🔔', 
+            icon: <FiBell />, 
             color: 'var(--warning-500)',
             path: '/job-matching/notifications'
         }
@@ -227,9 +233,12 @@ function QuickActions({ onActionClick }) {
                 margin: '0 0 24px 0',
                 fontSize: '18px',
                 fontWeight: '700',
-                color: 'var(--secondary-800)'
+                color: 'var(--secondary-800)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
             }}>
-                🚀 Quick Actions
+                <FiTarget /> Quick Actions
             </h3>
             
             <div style={{ 
@@ -309,28 +318,28 @@ export default function Dashboard() {
                 // Generate mock recent activities
                 setRecentActivities([
                     {
-                        icon: '💾',
+                        icon: <FiBriefcase />,
                         title: 'Job Saved',
                         description: 'Frontend Intern (React) at CareerSync Labs',
                         time: '2 hours ago',
                         color: 'var(--success-500)'
                     },
                     {
-                        icon: '🔍',
+                        icon: <FiSearch />,
                         title: 'New Search',
                         description: 'Searched for "React Developer" positions',
                         time: '5 hours ago',
                         color: 'var(--primary-500)'
                     },
                     {
-                        icon: '⭐',
+                        icon: <FiStar />,
                         title: 'Recommendations Updated',
                         description: `${Array.isArray(recommended) ? recommended.length : 0} new job matches found`,
                         time: '1 day ago',
                         color: 'var(--accent-500)'
                     },
                     {
-                        icon: '🔔',
+                        icon: <FiBell />,
                         title: 'Notification Received',
                         description: 'Application deadline reminder',
                         time: '2 days ago',
@@ -366,9 +375,13 @@ export default function Dashboard() {
                         background: 'var(--error-500)20',
                         border: '1px solid var(--error-500)30',
                         color: 'var(--error-500)',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
                     }}>
-                        ⚠️ {authError}
+                        <FiAlertTriangle /> {authError}
                     </div>
                 )}
                 
@@ -377,15 +390,19 @@ export default function Dashboard() {
                         background: 'var(--error-500)20',
                         border: '1px solid var(--error-500)30',
                         color: 'var(--error-500)',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
                     }}>
-                        ⚠️ {error}
+                        <FiAlertTriangle /> {error}
                     </div>
                 )}
                 
                 {!ready && (
                     <div className="glass-panel" style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '24px', marginBottom: '16px' }}>⚡</div>
+                        <div style={{ fontSize: '24px', marginBottom: '16px', display: 'flex', justifyContent: 'center' }}><FiZap /></div>
                         <div>Starting demo session…</div>
                     </div>
                 )}
@@ -395,8 +412,10 @@ export default function Dashboard() {
                         <div style={{ 
                             fontSize: '24px', 
                             marginBottom: '16px',
-                            animation: 'spin 1s linear infinite'
-                        }}>🔄</div>
+                            animation: 'spin 1s linear infinite',
+                            display: 'flex', 
+                            justifyContent: 'center' 
+                        }}><FiRotateCw /></div>
                         <div>Loading dashboard…</div>
                     </div>
                 )}
@@ -406,7 +425,7 @@ export default function Dashboard() {
                         {/* Stats Grid */}
                         <div className="modern-grid" style={{ marginBottom: '40px' }}>
                             <StatCard
-                                icon="📝"
+                                icon={<FiEdit3 />}
                                 label="Applications Sent"
                                 value={stats.totalApplicationsSent}
                                 trend={12}
@@ -414,7 +433,7 @@ export default function Dashboard() {
                                 delay={0}
                             />
                             <StatCard
-                                icon="💾"
+                                icon={<FiBookmark />}
                                 label="Saved Jobs"
                                 value={stats.savedJobsCount}
                                 trend={stats.savedJobsCount > 0 ? 25 : 0}
@@ -422,14 +441,14 @@ export default function Dashboard() {
                                 delay={100}
                             />
                             <StatCard
-                                icon="⭐"
+                                icon={<FiStar />}
                                 label="Recommended Jobs"
                                 value={stats.recommendedJobsCount}
                                 color="var(--accent-500)"
                                 delay={200}
                             />
                             <StatCard
-                                icon="🔔"
+                                icon={<FiBell />}
                                 label="New Notifications"
                                 value={stats.notificationsCount}
                                 color="var(--warning-500)"

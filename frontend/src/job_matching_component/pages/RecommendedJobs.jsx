@@ -1,80 +1,103 @@
 import React, { useEffect, useState, useMemo } from 'react';
-
+import { FiTarget, FiZap, FiStar, FiTrendingUp, FiInfo, FiSearch, FiBarChart, FiMonitor, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import JobCard from '../components/JobCard';
 import { getRecommendedJobs, getSavedJobs, saveJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
-// Match Quality Banner Component
-function MatchQualityBanner({ averageMatch, totalJobs }) {
-    const getMatchQuality = (avg) => {
-        if (avg >= 80) return { label: 'Excellent', color: 'var(--success-500)', emoji: '🎯' };
-        if (avg >= 60) return { label: 'Good', color: 'var(--primary-500)', emoji: '👍' };
-        if (avg >= 40) return { label: 'Fair', color: 'var(--warning-500)', emoji: '⚡' };
-        return { label: 'Basic', color: 'var(--secondary-500)', emoji: '📍' };
+// Pagination Component
+function Pagination({ currentPage, totalPages, onPageChange }) {
+    const getVisiblePages = () => {
+        const delta = 2;
+        const range = [];
+        const rangeWithDots = [];
+
+        for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+            range.push(i);
+        }
+
+        if (currentPage - delta > 2) {
+            rangeWithDots.push(1, '...');
+        } else {
+            rangeWithDots.push(1);
+        }
+
+        rangeWithDots.push(...range);
+
+        if (currentPage + delta < totalPages - 1) {
+            rangeWithDots.push('...', totalPages);
+        } else if (totalPages > 1) {
+            rangeWithDots.push(totalPages);
+        }
+
+        return rangeWithDots;
     };
 
-    const quality = getMatchQuality(averageMatch);
+    if (totalPages <= 1) return null;
 
     return (
-        <div className="glass-panel animate-fade-in" style={{
-            background: `linear-gradient(135deg, ${quality.color}15, ${quality.color}05)`,
-            border: `1px solid ${quality.color}30`,
-            padding: '24px',
-            textAlign: 'center',
-            marginBottom: '32px'
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '32px',
+            paddingBottom: '32px'
         }}>
-            <div style={{
-                fontSize: '48px',
-                marginBottom: '16px'
-            }}>
-                🤖✨
-            </div>
-            <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: 'var(--secondary-800)',
-                marginBottom: '12px'
-            }}>
-                AI-Powered Job Recommendations
-            </h2>
-            <p style={{
-                fontSize: '16px',
-                color: 'var(--secondary-600)',
-                marginBottom: '20px',
-                maxWidth: '600px',
-                margin: '0 auto 20px'
-            }}>
-                Our intelligent matching algorithm analyzed your profile, skills, and preferences to find {totalJobs} personalized opportunities
-            </p>
-            
-            <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 24px',
-                borderRadius: '50px',
-                background: `${quality.color}20`,
-                border: `1px solid ${quality.color}40`
-            }}>
-                <span style={{ fontSize: '24px' }}>{quality.emoji}</span>
-                <span style={{
-                    fontWeight: '700',
-                    color: quality.color,
-                    fontSize: '16px'
-                }}>
-                    Match Quality: {quality.label}
-                </span>
-                <div style={{
-                    padding: '4px 12px',
-                    borderRadius: '20px',
-                    background: quality.color,
-                    color: 'white',
-                    fontSize: '14px',
-                    fontWeight: '600'
-                }}>
-                    {averageMatch}% avg
-                </div>
-            </div>
+            <button
+                className={`btn-outline ${currentPage === 1 ? 'disabled' : ''}`}
+                onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                    padding: '8px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    opacity: currentPage === 1 ? 0.5 : 1,
+                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                }}
+            >
+                <FiChevronLeft /> Previous
+            </button>
+
+            {getVisiblePages().map((page, index) => (
+                page === '...' ? (
+                    <span key={`dots-${index}`} style={{ padding: '8px 4px', color: 'var(--secondary-500)' }}>
+                        ...
+                    </span>
+                ) : (
+                    <button
+                        key={page}
+                        className={`btn-outline ${currentPage === page ? 'active' : ''}`}
+                        onClick={() => onPageChange(page)}
+                        style={{
+                            padding: '8px 12px',
+                            minWidth: '40px',
+                            background: currentPage === page ? 'var(--primary-500)' : 'transparent',
+                            color: currentPage === page ? 'white' : 'var(--secondary-700)',
+                            border: `1px solid ${currentPage === page ? 'var(--primary-500)' : 'var(--secondary-300)'}`,
+                            fontWeight: currentPage === page ? '600' : '400'
+                        }}
+                    >
+                        {page}
+                    </button>
+                )
+            ))}
+
+            <button
+                className={`btn-outline ${currentPage === totalPages ? 'disabled' : ''}`}
+                onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                    padding: '8px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    opacity: currentPage === totalPages ? 0.5 : 1,
+                    cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                }}
+            >
+                Next <FiChevronRight />
+            </button>
         </div>
     );
 }
@@ -83,11 +106,11 @@ function MatchQualityBanner({ averageMatch, totalJobs }) {
 function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
     const categories = useMemo(() => {
         const cats = [
-            { id: 'all', label: 'All Recommendations', count: jobs.length, icon: '🎯' },
-            { id: 'perfect', label: 'Perfect Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 90).length, icon: '⭐' },
-            { id: 'high', label: 'High Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 70 && (j.matchPercentage || 0) < 90).length, icon: '🔥' },
+            { id: 'all', label: 'All Recommendations', count: jobs.length, icon: <FiTarget /> },
+            { id: 'perfect', label: 'Perfect Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 90).length, icon: <FiStar /> },
+            { id: 'high', label: 'High Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 70 && (j.matchPercentage || 0) < 90).length, icon: <FiTrendingUp /> },
             { id: 'good', label: 'Good Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 50 && (j.matchPercentage || 0) < 70).length, icon: '👍' },
-            { id: 'potential', label: 'Potential', count: jobs.filter(j => (j.matchPercentage || 0) < 50).length, icon: '💡' }
+            { id: 'potential', label: 'Potential', count: jobs.filter(j => (j.matchPercentage || 0) < 50).length, icon: <FiInfo /> }
         ];
         return cats.filter(cat => cat.count > 0);
     }, [jobs]);
@@ -141,7 +164,7 @@ function EmptyRecommendationsState() {
             textAlign: 'center',
             padding: '64px 32px'
         }}>
-            <div style={{ fontSize: '64px', marginBottom: '24px' }}>🤖</div>
+            <div style={{ fontSize: '64px', marginBottom: '24px' }}><FiMonitor /></div>
             <h3 style={{
                 fontSize: '24px',
                 fontWeight: '700',
@@ -169,13 +192,13 @@ function EmptyRecommendationsState() {
                     className="btn-primary"
                     onClick={() => window.location.href = '/job-matching/search'}
                 >
-                    🔍 Browse All Jobs
+                    <FiSearch style={{ marginRight: '8px' }} /> Browse All Jobs
                 </button>
                 <button 
                     className="btn-secondary"
                     onClick={() => window.location.href = '/job-matching/dashboard'}
                 >
-                    📊 View Dashboard
+                    <FiBarChart style={{ marginRight: '8px' }} /> View Dashboard
                 </button>
             </div>
         </div>
@@ -194,7 +217,7 @@ function LoadingState() {
                 marginBottom: '24px',
                 animation: 'spin 1s linear infinite'
             }}>
-                🤖
+                <div style={{ fontSize: '18px', marginRight: '8px' }}><FiMonitor /></div>
             </div>
             <h3 style={{
                 fontSize: '18px',
@@ -221,6 +244,8 @@ export default function RecommendedJobs() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const JOBS_PER_PAGE = 6;
 
     const filteredJobs = useMemo(() => {
         switch(activeCategory) {
@@ -236,6 +261,13 @@ export default function RecommendedJobs() {
                 return jobs;
         }
     }, [jobs, activeCategory]);
+
+    const paginatedJobs = useMemo(() => {
+        const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
+        return filteredJobs.slice(startIndex, startIndex + JOBS_PER_PAGE);
+    }, [filteredJobs, currentPage]);
+
+    const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
 
     const averageMatch = useMemo(() => {
         if (!jobs || jobs.length === 0) return 0;
@@ -267,6 +299,11 @@ export default function RecommendedJobs() {
         load();
     }, [ready]);
 
+    // Reset to page 1 when category changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeCategory]);
+
     const handleSave = async (job) => {
         try {
             await saveJob(job._id);
@@ -280,13 +317,20 @@ export default function RecommendedJobs() {
         // Apply flow handled elsewhere.
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <div className="page">
             <div className="container">
                 <div className="page-header">
-                    <h1 className="page-title">⭐ AI Recommendations</h1>
+                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <FiStar /> AI Recommendations
+                    </h1>
                     <p className="page-subtitle">
-                        Personalized job matches powered by machine learning and skill analysis
+                        {filteredJobs.length} personalized job matches found
                     </p>
                 </div>
 
@@ -331,7 +375,7 @@ export default function RecommendedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚡</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
                         <div>Starting demo session…</div>
                     </div>
                 )}
@@ -342,37 +386,49 @@ export default function RecommendedJobs() {
                     <>
                         {jobs.length > 0 ? (
                             <>
-                                <MatchQualityBanner 
-                                    averageMatch={averageMatch}
-                                    totalJobs={jobs.length}
-                                />
-                                
                                 <RecommendationCategories
                                     jobs={jobs}
                                     activeCategory={activeCategory}
                                     setActiveCategory={setActiveCategory}
                                 />
 
-                                <div className="modern-grid">
-                                    {filteredJobs.map((job, index) => (
-                                        <div
-                                            key={job._id}
-                                            className="animate-fade-in"
-                                            style={{
-                                                animationDelay: `${index * 50}ms`
-                                            }}
-                                        >
-                                            <JobCard
-                                                job={job}
-                                                matchPercentage={typeof job.matchPercentage === 'number' ? job.matchPercentage : undefined}
-                                                onApply={handleApply}
-                                                onSave={handleSave}
-                                                isSaved={savedJobIds.has(String(job._id))}
-                                                showMatchDetails={true}
-                                            />
+                                {paginatedJobs.length > 0 ? (
+                                    <>
+                                        <div className="modern-grid">
+                                            {paginatedJobs.map((job, index) => (
+                                                <div
+                                                    key={job._id}
+                                                    className="animate-fade-in"
+                                                    style={{
+                                                        animationDelay: `${index * 50}ms`
+                                                    }}
+                                                >
+                                                    <JobCard
+                                                        job={job}
+                                                        matchPercentage={typeof job.matchPercentage === 'number' ? job.matchPercentage : undefined}
+                                                        onApply={handleApply}
+                                                        onSave={handleSave}
+                                                        isSaved={savedJobIds.has(String(job._id))}
+                                                        showMatchDetails={true}
+                                                    />
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
+                                        
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    </>
+                                ) : (
+                                    <div className="glass-panel" style={{ 
+                                        textAlign: 'center',
+                                        padding: '40px 20px' 
+                                    }}>
+                                        <p>No jobs found in this category.</p>
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <EmptyRecommendationsState />

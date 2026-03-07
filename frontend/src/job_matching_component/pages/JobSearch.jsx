@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
+import { FiSearch, FiBriefcase, FiBarChart, FiStar } from 'react-icons/fi';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, saveJob, searchJobs } from '../../services/jobService';
+import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
 // Results Header Component
 function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode }) {
@@ -26,7 +27,7 @@ function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode 
                     fontWeight: '600',
                     color: 'var(--secondary-800)'
                 }}>
-                    📊 {total} {total === 1 ? 'result' : 'results'}
+                    <FiBarChart style={{ marginRight: '6px' }} /> {total} {total === 1 ? 'result' : 'results'}
                     {query && (
                         <span style={{ color: 'var(--secondary-600)' }}>
                             {' '}for "<span style={{ color: 'var(--primary-500)', fontWeight: '700' }}>{query}</span>"
@@ -163,7 +164,7 @@ function EmptyState({ query, hasFilters }) {
                         className="btn-primary"
                         onClick={() => window.location.href = '/job-matching/recommended'}
                     >
-                        ⭐ View Recommendations
+                        <FiStar style={{ marginRight: '8px' }} /> View Recommendations
                     </button>
                 </div>
             )}
@@ -300,7 +301,9 @@ export default function JobSearch() {
         <div className="page">
             <div className="container">
                 <div className="page-header">
-                    <h1 className="page-title">🔍 Advanced Job Search</h1>
+                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <FiSearch /> Advanced Job Search
+                    </h1>
                     <p className="page-subtitle">
                         Discover internships and part-time opportunities with AI-powered matching
                     </p>

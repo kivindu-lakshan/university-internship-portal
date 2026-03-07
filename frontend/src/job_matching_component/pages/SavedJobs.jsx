@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-
+import { FiBookmark, FiTarget, FiSearch, FiTrash2, FiZap, FiStar } from 'react-icons/fi';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, removeSavedJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -37,10 +37,10 @@ function SavedJobsStats({ jobs }) {
     if (!stats) return null;
 
     const statCards = [
-        { label: 'Total Saved', value: stats.totalJobs, icon: '💾', color: 'var(--primary-500)' },
+        { label: 'Total Saved', value: stats.totalJobs, icon: <FiBookmark />, color: 'var(--primary-500)' },
         { label: 'Companies', value: stats.companies, icon: '🏢', color: 'var(--accent-500)' },
         { label: 'Saved This Week', value: stats.recentlySaved, icon: '📅', color: 'var(--success-500)' },
-        { label: 'Top Category', value: stats.topJobType, icon: '🎯', color: 'var(--warning-500)' }
+        { label: 'Top Category', value: stats.topJobType, icon: <FiTarget />, color: 'var(--warning-500)' }
     ];
 
     return (
@@ -140,7 +140,7 @@ function SavedJobsToolbar({ onSearch, onSort, sortBy, onBulkAction, selectedCoun
                             fontSize: '18px',
                             color: 'var(--secondary-400)'
                         }}>
-                            🔍
+                            <FiSearch />
                         </div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ function SavedJobsToolbar({ onSearch, onSort, sortBy, onBulkAction, selectedCoun
                                     borderRadius: '6px'
                                 }}
                             >
-                                🗑️ Remove
+                                <FiTrash2 style={{ marginRight: '6px' }} /> Remove
                             </button>
                         </div>
                     )}
@@ -210,7 +210,7 @@ function EmptySavedJobsState() {
             textAlign: 'center',
             padding: '64px 32px'
         }}>
-            <div style={{ fontSize: '64px', marginBottom: '24px' }}>💾</div>
+            <div style={{ fontSize: '64px', marginBottom: '24px' }}><FiBookmark /></div>
             <h3 style={{
                 fontSize: '24px',
                 fontWeight: '700',
@@ -238,13 +238,13 @@ function EmptySavedJobsState() {
                     className="btn-primary"
                     onClick={() => window.location.href = '/job-matching/search'}
                 >
-                    🔍 Browse Jobs
+                    <FiSearch style={{ marginRight: '8px' }} /> Browse Jobs
                 </button>
                 <button 
                     className="btn-secondary"
                     onClick={() => window.location.href = '/job-matching/recommended'}
                 >
-                    ⭐ View Recommendations
+                    <FiStar style={{ marginRight: '8px' }} /> View Recommendations
                 </button>
             </div>
         </div>
@@ -263,7 +263,7 @@ function LoadingState() {
                 marginBottom: '24px',
                 animation: 'spin 1s linear infinite'
             }}>
-                💾
+                <div style={{ fontSize: '18px', marginRight: '8px' }}><FiBookmark /></div>
             </div>
             <h3 style={{
                 fontSize: '18px',
@@ -384,7 +384,9 @@ export default function SavedJobs() {
         <div className="page">
             <div className="container">
                 <div className="page-header">
-                    <h1 className="page-title">💾 Saved Jobs</h1>
+                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <FiBookmark /> Saved Jobs
+                    </h1>
                     <p className="page-subtitle">
                         Your curated collection of interesting opportunities
                     </p>
@@ -431,7 +433,7 @@ export default function SavedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚡</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
                         <div>Starting demo session…</div>
                     </div>
                 )}
@@ -489,7 +491,7 @@ export default function SavedJobs() {
                                         textAlign: 'center',
                                         padding: '48px 32px'
                                     }}>
-                                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
+                                        <div style={{ fontSize: '48px', marginBottom: '16px' }}><FiSearch /></div>
                                         <h3 style={{
                                             fontSize: '20px',
                                             fontWeight: '700',

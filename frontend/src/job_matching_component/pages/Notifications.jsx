@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-
+import { FiBell, FiTarget, FiCheck, FiSearch, FiList, FiSettings, FiZap } from 'react-icons/fi';
 import NotificationItem from '../components/NotificationItem';
 import { getNotifications } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -38,7 +38,7 @@ function NotificationStats({ notifications }) {
         { 
             label: 'Total Notifications', 
             value: stats.total, 
-            icon: '🔔', 
+            icon: <FiBell />, 
             color: 'var(--primary-500)' 
         },
         { 
@@ -56,7 +56,7 @@ function NotificationStats({ notifications }) {
         { 
             label: 'Most Active', 
             value: stats.mostActiveType, 
-            icon: '🎯', 
+            icon: <FiTarget />, 
             color: 'var(--accent-500)' 
         }
     ];
@@ -129,12 +129,12 @@ function NotificationFilters({
     }, [notifications]);
 
     const filters = [
-        { id: 'all', label: 'All', icon: '📋', count: filterCounts.all },
+        { id: 'all', label: 'All', icon: <FiList />, count: filterCounts.all },
         { id: 'unread', label: 'Unread', icon: '🆕', count: filterCounts.unread },
-        { id: 'job_match', label: 'Job Matches', icon: '🎯', count: filterCounts.job_match },
+        { id: 'job_match', label: 'Job Matches', icon: <FiTarget />, count: filterCounts.job_match },
         { id: 'deadline', label: 'Deadlines', icon: '⏰', count: filterCounts.deadline },
         { id: 'application', label: 'Applications', icon: '📄', count: filterCounts.application },
-        { id: 'system', label: 'System', icon: '⚙️', count: filterCounts.system }
+        { id: 'system', label: 'System', icon: <FiSettings />, count: filterCounts.system }
     ].filter(f => f.count > 0);
 
     return (
@@ -219,7 +219,7 @@ function NotificationFilters({
                             fontSize: '14px'
                         }}
                     >
-                        ⚙️ Settings
+                        <FiSettings style={{ marginRight: '8px' }} /> Settings
                     </button>
                 </div>
             </div>
@@ -235,13 +235,13 @@ function EmptyNotificationsState({ activeFilter }) {
                 return {
                     title: 'All caught up! 🎉',
                     message: 'You\'ve read all your notifications. Great job staying on top of things!',
-                    emoji: '✅'
+                    icon: <FiCheck />
                 };
             case 'job_match':
                 return {
                     title: 'No job matches yet',
                     message: 'Update your profile and preferences to receive personalized job recommendations.',
-                    emoji: '🎯'
+                    icon: <FiTarget />
                 };
             case 'deadline':
                 return {
@@ -253,7 +253,7 @@ function EmptyNotificationsState({ activeFilter }) {
                 return {
                     title: 'No notifications yet',
                     message: 'Stay tuned! We\'ll notify you about job matches, deadlines, and important updates.',
-                    emoji: '🔔'
+                    icon: <FiBell />
                 };
         }
     };
@@ -295,7 +295,7 @@ function EmptyNotificationsState({ activeFilter }) {
                     className="btn-primary"
                     onClick={() => window.location.href = '/job-matching/search'}
                 >
-                    🔍 Browse Jobs
+                    <FiSearch style={{ marginRight: '8px' }} /> Browse Jobs
                 </button>
                 <button 
                     className="btn-secondary"
@@ -320,7 +320,7 @@ function LoadingState() {
                 marginBottom: '24px',
                 animation: 'spin 1s linear infinite'
             }}>
-                🔔
+                <div style={{ fontSize: '18px', marginRight: '8px' }}><FiBell /></div>
             </div>
             <h3 style={{
                 fontSize: '18px',
@@ -395,7 +395,9 @@ export default function Notifications() {
         <div className="page">
             <div className="container">
                 <div className="page-header">
-                    <h1 className="page-title">🔔 Notification Center</h1>
+                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <FiBell /> Notification Center
+                    </h1>
                     <p className="page-subtitle">
                         Stay updated with job matches, deadlines, and application updates
                     </p>
@@ -442,7 +444,7 @@ export default function Notifications() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚡</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
                         <div>Starting demo session…</div>
                     </div>
                 )}

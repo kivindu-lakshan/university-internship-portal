@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FiDollarSign, FiClock, FiMapPin, FiBriefcase, FiEdit3, FiBookmark, FiCheck, FiStar, FiSend } from 'react-icons/fi';
 
 // Match Percentage Circle Component
 function MatchIndicator({ percentage }) {
@@ -37,7 +38,7 @@ function SalaryDisplay({ salary }) {
     if (!salary) {
         return (
             <div className="card-meta-item">
-                <div className="card-meta-icon">💰</div>
+                <div className="card-meta-icon"><FiDollarSign /></div>
                 <span>Not disclosed</span>
             </div>
         );
@@ -52,7 +53,7 @@ function SalaryDisplay({ salary }) {
     
     return (
         <div className="card-meta-item">
-            <div className="card-meta-icon">💰</div>
+            <div className="card-meta-icon"><FiDollarSign /></div>
             <span>{formatSalary(salary)}</span>
         </div>
     );
@@ -88,7 +89,7 @@ function DeadlineDisplay({ deadline }) {
     
     return (
         <div className="card-meta-item">
-            <div className="card-meta-icon" style={{ background: urgencyColor }}>⏰</div>
+            <div className="card-meta-icon" style={{ background: urgencyColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FiClock /></div>
             <span style={{ color: urgencyColor, fontWeight: '600' }}>{deadlineText}</span>
         </div>
     );
@@ -148,12 +149,12 @@ export default function JobCard({
             
             <div className="card-meta">
                 <div className="card-meta-item">
-                    <div className="card-meta-icon">📍</div>
+                    <div className="card-meta-icon"><FiMapPin /></div>
                     <span>{job?.location || 'Location not specified'}</span>
                 </div>
                 
                 <div className="card-meta-item">
-                    <div className="card-meta-icon">💼</div>
+                    <div className="card-meta-icon"><FiBriefcase /></div>
                     <span>{job?.jobType || 'Type not specified'}</span>
                 </div>
                 
@@ -174,7 +175,11 @@ export default function JobCard({
                         transform: isApplying ? 'scale(0.95)' : 'scale(1)'
                     }}
                 >
-                    {isApplying ? '🚀 Applying...' : '📝 Apply Now'}
+                    {isApplying ? (
+                        <><FiSend style={{ marginRight: '4px' }} /> Applying...</>
+                    ) : (
+                        <><FiEdit3 style={{ marginRight: '4px' }} /> Apply Now</>
+                    )}
                 </button>
                 
                 {showRemove ? (
@@ -203,7 +208,13 @@ export default function JobCard({
                             transform: isSaving ? 'scale(0.95)' : 'scale(1)'
                         }}
                     >
-                        {isSaving ? '💫' : isSaved ? '✅ Saved' : '💾 Save Job'}
+                        {isSaving ? (
+                            <FiStar style={{ marginRight: '4px', animation: 'spin 1s linear infinite' }} />
+                        ) : isSaved ? (
+                            <><FiCheck style={{ marginRight: '4px' }} /> Saved</>
+                        ) : (
+                            <><FiBookmark style={{ marginRight: '4px' }} /> Save Job</>
+                        )}
                     </button>
                 )}
             </div>

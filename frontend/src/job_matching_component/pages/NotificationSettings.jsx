@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { FiSettings, FiCheck, FiZap, FiMail, FiTarget, FiInfo } from 'react-icons/fi';
 import api from '../../services/api';
 import { updateNotificationSettings } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -146,7 +146,7 @@ function SaveStatus({ saving, message, error }) {
                 justifyContent: 'center',
                 gap: '12px'
             }}>
-                <span style={{ fontSize: '20px' }}>✅</span>
+                <span style={{ fontSize: '20px', color: 'var(--success-500)' }}><FiCheck /></span>
                 <span style={{ fontWeight: '600' }}>{message}</span>
             </div>
         );
@@ -245,7 +245,9 @@ export default function NotificationSettings() {
         <div className="page">
             <div className="container">
                 <div className="page-header">
-                    <h1 className="page-title">⚙️ Notification Settings</h1>
+                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <FiSettings /> Notification Settings
+                    </h1>
                     <p className="page-subtitle">
                         Customize how and when you receive job-related updates and alerts
                     </p>
@@ -348,7 +350,7 @@ export default function NotificationSettings() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚡</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
                         <div>Starting demo session…</div>
                     </div>
                 )}
@@ -363,7 +365,7 @@ export default function NotificationSettings() {
                             marginBottom: '24px',
                             animation: 'spin 1s linear infinite'
                         }}>
-                            ⚙️
+                            <div style={{ fontSize: '18px', marginRight: '8px' }}><FiSettings /></div>
                         </div>
                         <h3 style={{
                             fontSize: '18px',
@@ -386,7 +388,7 @@ export default function NotificationSettings() {
                         <SettingsSection
                             title="Email Notifications"
                             description="Control how we communicate with you via email"
-                            icon="📧"
+                            icon={<FiMail />}
                         >
                             {modernSwitch({
                                 on: settings.emailNotifications,
@@ -400,7 +402,7 @@ export default function NotificationSettings() {
                         <SettingsSection
                             title="Job Matching Alerts"
                             description="Get notified when new opportunities match your profile"
-                            icon="🎯"
+                            icon={<FiTarget />}
                         >
                             {modernSwitch({
                                 on: settings.newJobAlerts,
@@ -453,7 +455,7 @@ export default function NotificationSettings() {
                                 alignItems: 'flex-start',
                                 gap: '16px'
                             }}>
-                                <div style={{ fontSize: '32px' }}>💡</div>
+                                <div style={{ fontSize: '32px', color: 'var(--warning-500)' }}><FiInfo /></div>
                                 <div>
                                     <h3 style={{
                                         fontSize: '16px',
