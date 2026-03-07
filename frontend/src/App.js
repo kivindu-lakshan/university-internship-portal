@@ -1,6 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import './App.css';
+
+import JobSearch from './job_matching_component/pages/JobSearch';
+import RecommendedJobs from './job_matching_component/pages/RecommendedJobs';
+import SavedJobs from './job_matching_component/pages/SavedJobs';
+import Notifications from './job_matching_component/pages/Notifications';
+import NotificationSettings from './job_matching_component/pages/NotificationSettings';
+import Dashboard from './job_matching_component/pages/Dashboard';
+
 function App() {
     return (
         <Router>
@@ -14,6 +23,14 @@ function App() {
 
                     {/* Student Routes */}
                     <Route path="/student/dashboard" element={<h1>Student Dashboard</h1>} />
+
+                    {/* Matching, Search Intelligence & Notifications */}
+                    <Route path="/student/jobs/search" element={<JobSearch />} />
+                    <Route path="/student/jobs/recommended" element={<RecommendedJobs />} />
+                    <Route path="/student/jobs/saved" element={<SavedJobs />} />
+                    <Route path="/student/notifications" element={<Notifications />} />
+                    <Route path="/student/notifications/settings" element={<NotificationSettings />} />
+                    <Route path="/student/dashboard/matching" element={<Dashboard />} />
 
                     {/* Employer Routes */}
                     <Route path="/employer/dashboard" element={<h1>Employer Dashboard</h1>} />

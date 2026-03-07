@@ -157,4 +157,42 @@ const getMe = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, verifyEmail, loginUser, getMe };
+// @desc    Demo login (dev only)
+// @route   POST /api/auth/demo-login
+// @access  Public (dev only)
+const demoLogin = async (req, res) => {
+    try {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(404).json({ message: 'Not found' });
+        }
+
+        const email = 'student.demo@careersync.test';
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({
+                message: 'Demo user not found. Run the seed script first.'
+            });
+        }
+
+        if (!user.isVerified) {
+            user.isVerified = true;
+            await user.save();
+        }
+
+        res.status(200).json({
+            message: 'Demo login successful',
+            token: generateToken(user._id, user.role),
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                isVerified: user.isVerified
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = { registerUser, verifyEmail, loginUser, demoLogin, getMe };

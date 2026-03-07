@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed:job-matching": "node job_matching_component/seed/seed.js"
   },
   "keywords": [],
   "author": "",
