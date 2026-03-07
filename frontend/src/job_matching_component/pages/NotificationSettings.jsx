@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { FiSettings, FiCheck, FiZap, FiMail, FiTarget, FiInfo } from 'react-icons/fi';
+import { FiSettings, FiCheck, FiMail, FiBell, FiArrowLeft } from 'react-icons/fi';
 import api from '../../services/api';
-import { updateNotificationSettings } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
-// Modern Toggle Switch Component
-const modernSwitch = ({ on, onToggle, label, description, disabled = false }) => {
+// Clean Toggle Switch Component
+const ToggleSwitch = ({ on, onToggle, label, description, disabled = false }) => {
     return (
         <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
             gap: '16px',
-            padding: '20px 0',
-            borderBottom: '1px solid var(--secondary-200)'
+            padding: '16px 0',
+            borderBottom: '1px solid var(--secondary-100)'
         }}>
             <div style={{ flex: 1 }}>
                 <div style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
+                    fontSize: '15px',
+                    fontWeight: '500',
                     color: 'var(--secondary-800)',
                     marginBottom: '4px'
                 }}>
@@ -26,7 +25,7 @@ const modernSwitch = ({ on, onToggle, label, description, disabled = false }) =>
                 </div>
                 {description && (
                     <div style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: 'var(--secondary-600)',
                         lineHeight: '1.4'
                     }}>
@@ -38,28 +37,27 @@ const modernSwitch = ({ on, onToggle, label, description, disabled = false }) =>
             <div
                 onClick={disabled ? undefined : onToggle}
                 style={{
-                    width: '48px',
-                    height: '28px',
-                    borderRadius: '14px',
+                    width: '44px',
+                    height: '24px',
+                    borderRadius: '12px',
                     background: on ? 'var(--primary-500)' : 'var(--secondary-300)',
                     position: 'relative',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.3s ease',
-                    opacity: disabled ? 0.5 : 1,
-                    boxShadow: on ? `0 0 0 2px ${on ? 'var(--primary-500)' : 'var(--secondary-300)'}20` : 'none'
+                    transition: 'all 0.2s ease',
+                    opacity: disabled ? 0.5 : 1
                 }}
             >
                 <div
                     style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '12px',
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '10px',
                         background: 'white',
                         position: 'absolute',
                         top: '2px',
                         left: on ? '22px' : '2px',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        transition: 'all 0.2s ease',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                     }}
                 />
             </div>
@@ -68,106 +66,95 @@ const modernSwitch = ({ on, onToggle, label, description, disabled = false }) =>
 };
 
 // Settings Section Component
-function SettingsSection({ title, description, children, icon }) {
+function SettingsSection({ title, children }) {
     return (
-        <div className="glass-panel animate-fade-in" style={{ marginBottom: '24px' }}>
+        <div style={{
+            background: 'white',
+            border: '1px solid var(--secondary-200)',
+            borderRadius: '8px',
+            marginBottom: '16px'
+        }}>
             <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '20px',
-                paddingBottom: '16px',
-                borderBottom: '2px solid var(--secondary-200)'
+                padding: '16px 20px',
+                borderBottom: '1px solid var(--secondary-100)'
             }}>
-                <div style={{ fontSize: '32px' }}>{icon}</div>
-                <div>
-                    <h2 style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: 'var(--secondary-800)',
-                        margin: '0 0 4px 0'
-                    }}>
-                        {title}
-                    </h2>
-                    <p style={{
-                        fontSize: '14px',
-                        color: 'var(--secondary-600)',
-                        margin: '0'
-                    }}>
-                        {description}
-                    </p>
-                </div>
+                <h3 style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: 'var(--secondary-800)',
+                    margin: 0
+                }}>
+                    {title}
+                </h3>
             </div>
-            {children}
+            <div style={{ padding: '0 20px' }}>
+                {children}
+            </div>
         </div>
     );
 }
 
-// Save Status Component
-function SaveStatus({ saving, message, error }) {
+// Status Message Component
+function StatusMessage({ saving, message, error }) {
     if (saving) {
         return (
-            <div className="glass-panel" style={{
-                background: 'var(--primary-500)15',
-                border: '1px solid var(--primary-500)30',
-                color: 'var(--primary-600)',
-                textAlign: 'center',
-                padding: '16px',
-                marginBottom: '24px',
+            <div style={{
+                background: 'var(--primary-50)',
+                border: '1px solid var(--primary-200)',
+                borderRadius: '6px',
+                padding: '12px 16px',
+                color: 'var(--primary-700)',
+                marginBottom: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px'
+                gap: '8px',
+                fontSize: '14px'
             }}>
                 <div style={{
-                    width: '20px',
-                    height: '20px',
+                    width: '16px',
+                    height: '16px',
                     border: '2px solid var(--primary-500)',
                     borderTop: '2px solid transparent',
                     borderRadius: '50%',
                     animation: 'spin 1s linear infinite'
                 }} />
-                <span style={{ fontWeight: '600' }}>Saving your preferences...</span>
+                Saving preferences...
             </div>
         );
     }
 
     if (message) {
         return (
-            <div className="glass-panel animate-fade-in" style={{
-                background: 'var(--success-500)15',
-                border: '1px solid var(--success-500)30',
-                color: 'var(--success-600)',
-                textAlign: 'center',
-                padding: '16px',
-                marginBottom: '24px',
+            <div style={{
+                background: 'var(--success-50)',
+                border: '1px solid var(--success-200)',
+                borderRadius: '6px',
+                padding: '12px 16px',
+                color: 'var(--success-700)',
+                marginBottom: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px'
+                gap: '8px',
+                fontSize: '14px'
             }}>
-                <span style={{ fontSize: '20px', color: 'var(--success-500)' }}><FiCheck /></span>
-                <span style={{ fontWeight: '600' }}>{message}</span>
+                <FiCheck size={16} />
+                {message}
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="glass-panel animate-fade-in" style={{
-                background: 'var(--error-500)15',
-                border: '1px solid var(--error-500)30',
-                color: 'var(--error-500)',
-                textAlign: 'center',
-                padding: '16px',
-                marginBottom: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px'
+            <div style={{
+                background: 'var(--error-50)',
+                border: '1px solid var(--error-200)',
+                borderRadius: '6px',
+                padding: '12px 16px',
+                color: 'var(--error-700)',
+                marginBottom: '16px',
+                fontSize: '14px'
             }}>
-                <span style={{ fontSize: '20px' }}>⚠️</span>
-                <span style={{ fontWeight: '600' }}>{error}</span>
+                {error}
             </div>
         );
     }
@@ -206,7 +193,7 @@ export default function NotificationSettings() {
                     });
                 }
             } catch (e) {
-                setError(e?.response?.data?.message || 'Unable to load settings');
+                setError('Unable to load settings');
             } finally {
                 setLoading(false);
             }
@@ -227,261 +214,181 @@ export default function NotificationSettings() {
         setError('');
         setMessage('');
         try {
-            const updated = await updateNotificationSettings(settings);
-            if (updated) setSettings(updated);
-            setMessage('Settings saved successfully! 🎉');
+            await api.put('/auth/settings', { notificationSettings: settings });
+            setMessage('Settings saved successfully');
             setHasUnsavedChanges(false);
-            
-            // Clear success message after 3 seconds
             setTimeout(() => setMessage(''), 3000);
         } catch (e) {
-            setError(e?.response?.data?.message || 'Unable to save settings');
+            setError('Unable to save settings');
         } finally {
             setSaving(false);
         }
     };
 
+    if (authError) {
+        return (
+            <div className="page">
+                <div className="container">
+                    <div style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        background: 'var(--error-50)',
+                        border: '1px solid var(--error-200)',
+                        borderRadius: '8px',
+                        color: 'var(--error-600)'
+                    }}>
+                        {authError}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="page">
+                <div className="container">
+                    <div style={{ 
+                        textAlign: 'center', 
+                        padding: '40px 20px',
+                        background: 'white',
+                        borderRadius: '8px',
+                        border: '1px solid var(--secondary-200)'
+                    }}>
+                        <FiSettings size={32} color="var(--secondary-400)" style={{ marginBottom: '16px' }} />
+                        <p style={{ margin: 0, color: 'var(--secondary-600)' }}>Loading settings...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="page">
             <div className="container">
-                <div className="page-header">
-                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <FiSettings /> Notification Settings
-                    </h1>
-                    <p className="page-subtitle">
-                        Customize how and when you receive job-related updates and alerts
-                    </p>
-                </div>
-
-                {/* Action Bar */}
-                <div className="glass-panel" style={{
+                {/* Header */}
+                <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '16px 24px',
-                    marginBottom: '24px'
+                    marginBottom: '24px',
+                    padding: '16px 0',
+                    borderBottom: '1px solid var(--secondary-200)'
                 }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px'
-                    }}>
-                        {hasUnsavedChanges && (
-                            <>
-                                <div style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    background: 'var(--warning-500)',
-                                    animation: 'pulse 2s infinite'
-                                }} />
-                                <span style={{
-                                    fontSize: '14px',
-                                    color: 'var(--warning-600)',
-                                    fontWeight: '600'
-                                }}>
-                                    You have unsaved changes
-                                </span>
-                            </>
-                        )}
+                    <div>
+                        <h1 style={{ 
+                            margin: '0 0 4px 0', 
+                            fontSize: '20px', 
+                            fontWeight: '600',
+                            color: 'var(--secondary-800)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}>
+                            <FiSettings size={20} />
+                            Notification Settings
+                        </h1>
+                        <p style={{ 
+                            margin: 0, 
+                            fontSize: '14px', 
+                            color: 'var(--secondary-600)' 
+                        }}>
+                            Manage how you receive job alerts and updates
+                        </p>
                     </div>
-                    <div style={{
-                        display: 'flex',
-                        gap: '12px'
-                    }}>
+                    
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        {hasUnsavedChanges && (
+                            <span style={{
+                                fontSize: '12px',
+                                color: 'var(--warning-600)',
+                                fontWeight: '500'
+                            }}>
+                                Unsaved changes
+                            </span>
+                        )}
                         <button 
-                            className="btn-secondary"
+                            className="btn-outline"
                             onClick={() => window.location.href = '/job-matching/notifications'}
+                            style={{ 
+                                padding: '6px 12px', 
+                                fontSize: '14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                            }}
                         >
-                            📋 View Notifications
+                            <FiArrowLeft size={14} /> Back to Notifications
                         </button>
                         <button 
                             className="btn-primary"
                             onClick={save} 
-                            disabled={saving || loading || !hasUnsavedChanges}
+                            disabled={saving || !hasUnsavedChanges}
                             style={{
+                                padding: '6px 12px',
+                                fontSize: '14px',
                                 opacity: (!hasUnsavedChanges && !saving) ? 0.6 : 1,
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '8px'
+                                gap: '4px'
                             }}
                         >
-                            {saving ? (
-                                <>
-                                    <div style={{
-                                        width: '16px',
-                                        height: '16px',
-                                        border: '2px solid currentColor',
-                                        borderTop: '2px solid transparent',
-                                        borderRadius: '50%',
-                                        animation: 'spin 1s linear infinite'
-                                    }} />
-                                    Saving...
-                                </>
-                            ) : (
-                                <>
-                                    💾 Save Settings
-                                </>
-                            )}
+                            {saving ? 'Saving...' : 'Save Settings'}
                         </button>
                     </div>
                 </div>
 
                 {/* Status Messages */}
-                <SaveStatus saving={saving} message={message} error={error} />
+                <StatusMessage saving={saving} message={message} error={error} />
 
-                {authError && (
-                    <div className="glass-panel" style={{ 
-                        background: 'var(--error-500)20',
-                        border: '1px solid var(--error-500)30',
-                        color: 'var(--error-500)',
-                        textAlign: 'center',
-                        padding: '20px',
-                        marginBottom: '24px'
-                    }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
-                        <div style={{ fontWeight: '600' }}>{authError}</div>
-                    </div>
-                )}
+                {/* Email Settings */}
+                <SettingsSection title="Email Notifications">
+                    <ToggleSwitch
+                        on={settings.emailNotifications}
+                        onToggle={() => toggle('emailNotifications')}
+                        label="Email Notifications"
+                        description="Receive job-related updates via email"
+                    />
+                </SettingsSection>
 
-                {!ready && (
-                    <div className="glass-panel" style={{ 
-                        textAlign: 'center',
-                        padding: '20px',
-                        marginBottom: '24px'
-                    }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
-                        <div>Starting demo session…</div>
-                    </div>
-                )}
+                {/* Job Alerts */}
+                <SettingsSection title="Job Alerts">
+                    <ToggleSwitch
+                        on={settings.newJobAlerts}
+                        onToggle={() => toggle('newJobAlerts')}
+                        label="Job Match Alerts"
+                        description="Get notified when new jobs match your profile"
+                        disabled={!settings.emailNotifications}
+                    />
+                    <ToggleSwitch
+                        on={settings.deadlineReminders}
+                        onToggle={() => toggle('deadlineReminders')}
+                        label="Application Deadlines"
+                        description="Reminders for upcoming application deadlines"
+                        disabled={!settings.emailNotifications}
+                    />
+                    <ToggleSwitch
+                        on={settings.applicationUpdates}
+                        onToggle={() => toggle('applicationUpdates')}
+                        label="Application Updates"
+                        description="Status updates for your submitted applications"
+                        disabled={!settings.emailNotifications}
+                    />
+                </SettingsSection>
 
-                {loading ? (
-                    <div className="glass-panel animate-fade-in" style={{
-                        textAlign: 'center',
-                        padding: '48px 32px'
-                    }}>
-                        <div style={{
-                            fontSize: '48px',
-                            marginBottom: '24px',
-                            animation: 'spin 1s linear infinite'
-                        }}>
-                            <div style={{ fontSize: '18px', marginRight: '8px' }}><FiSettings /></div>
-                        </div>
-                        <h3 style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            color: 'var(--secondary-700)',
-                            marginBottom: '8px'
-                        }}>
-                            Loading your preferences...
-                        </h3>
-                        <p style={{
-                            fontSize: '14px',
-                            color: 'var(--secondary-500)'
-                        }}>
-                            Retrieving your notification settings
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        {/* Email Notifications Section */}
-                        <SettingsSection
-                            title="Email Notifications"
-                            description="Control how we communicate with you via email"
-                            icon={<FiMail />}
-                        >
-                            {modernSwitch({
-                                on: settings.emailNotifications,
-                                onToggle: () => toggle('emailNotifications'),
-                                label: 'Email Notifications',
-                                description: 'Receive all job-related updates via email. This includes new job matches, application updates, and important announcements.'
-                            })}
-                        </SettingsSection>
-
-                        {/* Job Alerts Section */}
-                        <SettingsSection
-                            title="Job Matching Alerts"
-                            description="Get notified when new opportunities match your profile"
-                            icon={<FiTarget />}
-                        >
-                            {modernSwitch({
-                                on: settings.newJobAlerts,
-                                onToggle: () => toggle('newJobAlerts'),
-                                label: 'New Job Alerts',
-                                description: 'Get instant notifications when new jobs match your skills, preferences, and career goals.',
-                                disabled: !settings.emailNotifications
-                            })}
-                        </SettingsSection>
-
-                        {/* Deadlines Section */}
-                        <SettingsSection
-                            title="Application Deadlines"
-                            description="Never miss an important application deadline"
-                            icon="⏰"
-                        >
-                            {modernSwitch({
-                                on: settings.deadlineReminders,
-                                onToggle: () => toggle('deadlineReminders'),
-                                label: 'Deadline Reminders',
-                                description: 'Receive timely reminders before application deadlines. We\'ll notify you 3 days, 1 day, and 2 hours before deadlines.',
-                                disabled: !settings.emailNotifications
-                            })}
-                        </SettingsSection>
-
-                        {/* Application Updates Section */}
-                        <SettingsSection
-                            title="Application Status"
-                            description="Stay informed about your application progress"
-                            icon="📊"
-                        >
-                            {modernSwitch({
-                                on: settings.applicationUpdates,
-                                onToggle: () => toggle('applicationUpdates'),
-                                label: 'Application Updates',
-                                description: 'Get notified when employers review your applications, schedule interviews, or update application status.',
-                                disabled: !settings.emailNotifications
-                            })}
-                        </SettingsSection>
-
-                        {/* Information Panel */}
-                        <div className="glass-panel" style={{
-                            background: 'var(--primary-500)10',
-                            border: '1px solid var(--primary-500)30',
-                            padding: '24px',
-                            marginTop: '32px'
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: '16px'
-                            }}>
-                                <div style={{ fontSize: '32px', color: 'var(--warning-500)' }}><FiInfo /></div>
-                                <div>
-                                    <h3 style={{
-                                        fontSize: '16px',
-                                        fontWeight: '700',
-                                        color: 'var(--secondary-800)',
-                                        marginBottom: '8px'
-                                    }}>
-                                        Quick Tips
-                                    </h3>
-                                    <ul style={{
-                                        margin: '0',
-                                        paddingLeft: '20px',
-                                        color: 'var(--secondary-600)',
-                                        fontSize: '14px',
-                                        lineHeight: '1.6'
-                                    }}>
-                                        <li>Email notifications must be enabled to receive other types of alerts</li>
-                                        <li>You can always adjust these settings later as your preferences change</li>
-                                        <li>All notifications respect your local timezone settings</li>
-                                        <li>Critical system updates will always be delivered regardless of preferences</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
+                {/* Info */}
+                <div style={{
+                    background: 'var(--secondary-50)',
+                    border: '1px solid var(--secondary-200)',
+                    borderRadius: '6px',
+                    padding: '16px',
+                    fontSize: '13px',
+                    color: 'var(--secondary-600)',
+                    lineHeight: '1.5'
+                }}>
+                    <strong style={{ color: 'var(--secondary-700)' }}>Note:</strong> Email notifications must be enabled to receive other types of alerts. 
+                    Critical system updates will always be delivered regardless of these settings.
+                </div>
             </div>
         </div>
     );

@@ -1,227 +1,173 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FiBell, FiTarget, FiCheck, FiSearch, FiList, FiSettings, FiZap } from 'react-icons/fi';
+import { FiBell, FiCheck, FiSettings, FiSearch, FiTrash2, FiTarget } from 'react-icons/fi';
 import NotificationItem from '../components/NotificationItem';
 import { getNotifications } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
-// Notification Statistics Component
-function NotificationStats({ notifications }) {
-    const stats = useMemo(() => {
-        const total = notifications.length;
-        const unread = notifications.filter(n => !n.isRead).length;
-        const today = new Date();
-        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        
-        const todayNotifications = notifications.filter(n => {
-            const notifDate = new Date(n.createdAt || n.timestamp);
-            return notifDate >= todayStart;
-        }).length;
+// Professional Notification Header
+function NotificationHeader({ unreadCount, onMarkAllRead, onSettings }) {
+    return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '16px 20px',
+            background: 'white',
+            border: '1px solid var(--secondary-200)',
+            borderRadius: '8px',
+            marginBottom: '16px'
+        }}>
+            <div>
+                <h2 style={{ 
+                    margin: '0 0 4px 0', 
+                    fontSize: '18px', 
+                    fontWeight: '600',
+                    color: 'var(--secondary-800)' 
+                }}>
+                    Notifications
+                </h2>
+                <p style={{ 
+                    margin: 0, 
+                    fontSize: '14px', 
+                    color: 'var(--secondary-600)' 
+                }}>
+                    {unreadCount > 0 ? `${unreadCount} unread messages` : 'All caught up'}
+                </p>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+                {unreadCount > 0 && (
+                    <button
+                        className="btn-outline"
+                        onClick={onMarkAllRead}
+                        style={{ 
+                            padding: '6px 12px', 
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                        }}
+                    >
+                        <FiCheck size={14} /> Mark all read
+                    </button>
+                )}
+                <button
+                    className="btn-outline"
+                    onClick={onSettings}
+                    style={{ 
+                        padding: '6px 12px', 
+                        fontSize: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                    }}
+                >
+                    <FiSettings size={14} /> Settings
+                </button>
+            </div>
+        </div>
+    );
+}
 
-        const types = notifications.reduce((acc, n) => {
-            const type = n.type || 'general';
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-        }, {});
-
-        const mostActiveType = Object.entries(types)
-            .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none';
-
-        return {
-            total,
-            unread,
-            todayNotifications,
-            mostActiveType
-        };
-    }, [notifications]);
-
-    const statCards = [
-        { 
-            label: 'Total Notifications', 
-            value: stats.total, 
-            icon: <FiBell />, 
-            color: 'var(--primary-500)' 
-        },
-        { 
-            label: 'Unread', 
-            value: stats.unread, 
-            icon: '🆕', 
-            color: 'var(--warning-500)' 
-        },
-        { 
-            label: 'Today', 
-            value: stats.todayNotifications, 
-            icon: '📅', 
-            color: 'var(--success-500)' 
-        },
-        { 
-            label: 'Most Active', 
-            value: stats.mostActiveType, 
-            icon: <FiTarget />, 
-            color: 'var(--accent-500)' 
-        }
-    ];
+// Simple Filter Tabs
+function NotificationTabs({ activeTab, setActiveTab, counts }) {
+    const tabs = [
+        { id: 'all', label: 'All', count: counts.total },
+        { id: 'unread', label: 'Unread', count: counts.unread },
+        { id: 'new_job', label: 'Job Alerts', count: counts.newJob },
+        { id: 'deadline_reminder', label: 'Deadlines', count: counts.deadline }
+    ].filter(tab => tab.count > 0);
 
     return (
         <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '20px',
-            marginBottom: '32px'
+            display: 'flex',
+            borderBottom: '1px solid var(--secondary-200)',
+            marginBottom: '16px',
+            background: 'white'
         }}>
-            {statCards.map((stat, index) => (
-                <div
-                    key={stat.label}
-                    className="modern-card animate-fade-in"
+            {tabs.map(tab => (
+                <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
                     style={{
-                        textAlign: 'center',
-                        background: `linear-gradient(135deg, ${stat.color}15, ${stat.color}05)`,
-                        border: `1px solid ${stat.color}30`,
-                        animationDelay: `${index * 100}ms`
+                        padding: '12px 16px',
+                        border: 'none',
+                        background: 'none',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: activeTab === tab.id ? 'var(--primary-600)' : 'var(--secondary-600)',
+                        borderBottom: activeTab === tab.id ? '2px solid var(--primary-600)' : '2px solid transparent',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                     }}
                 >
-                    <div style={{
-                        fontSize: '32px',
-                        marginBottom: '12px'
-                    }}>
-                        {stat.icon}
-                    </div>
-                    <div style={{
-                        fontSize: '24px',
-                        fontWeight: '800',
-                        color: stat.color,
-                        marginBottom: '8px'
-                    }}>
-                        {stat.value}
-                    </div>
-                    <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: 'var(--secondary-600)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                    }}>
-                        {stat.label}
-                    </div>
-                </div>
+                    {tab.label}
+                    {tab.count > 0 && (
+                        <span style={{
+                            background: activeTab === tab.id ? 'var(--primary-600)' : 'var(--secondary-400)',
+                            color: 'white',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            padding: '2px 6px',
+                            borderRadius: '10px',
+                            minWidth: '16px',
+                            textAlign: 'center'
+                        }}>
+                            {tab.count}
+                        </span>
+                    )}
+                </button>
             ))}
         </div>
     );
 }
 
-// Notification Filters Component
-function NotificationFilters({ 
-    notifications, 
-    activeFilter, 
-    setActiveFilter, 
+// Notification Controls
+function NotificationControls({ 
     showReadFilter, 
     setShowReadFilter 
 }) {
-    const filterCounts = useMemo(() => {
-        const counts = {
-            all: notifications.length,
-            unread: notifications.filter(n => !n.isRead).length,
-            job_match: notifications.filter(n => n.type === 'job_match').length,
-            deadline: notifications.filter(n => n.type === 'deadline').length,
-            application: notifications.filter(n => n.type === 'application').length,
-            system: notifications.filter(n => n.type === 'system').length
-        };
-        return counts;
-    }, [notifications]);
-
-    const filters = [
-        { id: 'all', label: 'All', icon: <FiList />, count: filterCounts.all },
-        { id: 'unread', label: 'Unread', icon: '🆕', count: filterCounts.unread },
-        { id: 'job_match', label: 'Job Matches', icon: <FiTarget />, count: filterCounts.job_match },
-        { id: 'deadline', label: 'Deadlines', icon: '⏰', count: filterCounts.deadline },
-        { id: 'application', label: 'Applications', icon: '📄', count: filterCounts.application },
-        { id: 'system', label: 'System', icon: <FiSettings />, count: filterCounts.system }
-    ].filter(f => f.count > 0);
-
     return (
-        <div className="glass-panel" style={{
-            padding: '20px 24px',
-            marginBottom: '24px'
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '16px',
+            borderBottom: '1px solid var(--secondary-200)',
+            background: 'white'
         }}>
             <div style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                flexWrap: 'wrap',
                 gap: '16px'
             }}>
-                {/* Filter Buttons */}
-                <div style={{
-                    display: 'flex',
-                    gap: '10px',
-                    flexWrap: 'wrap'
-                }}>
-                    {filters.map(filter => (
-                        <button
-                            key={filter.id}
-                            onClick={() => setActiveFilter(filter.id)}
-                            className={`btn-outline ${activeFilter === filter.id ? 'active' : ''}`}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                padding: '10px 16px',
-                                borderRadius: '50px',
-                                background: activeFilter === filter.id ? 'var(--primary-500)' : 'transparent',
-                                color: activeFilter === filter.id ? 'white' : 'var(--secondary-700)',
-                                border: `1px solid ${activeFilter === filter.id ? 'var(--primary-500)' : 'var(--secondary-300)'}`,
-                                fontSize: '14px',
-                                fontWeight: '600'
-                            }}
-                        >
-                            <span>{filter.icon}</span>
-                            <span>{filter.label}</span>
-                            <div style={{
-                                padding: '2px 8px',
-                                borderRadius: '12px',
-                                background: activeFilter === filter.id ? 'rgba(255,255,255,0.2)' : 'var(--secondary-200)',
-                                fontSize: '12px',
-                                fontWeight: '700'
-                            }}>
-                                {filter.count}
-                            </div>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Read Filter Toggle */}
-                <div style={{
+                <label style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px'
+                    gap: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer'
                 }}>
-                    <label style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        cursor: 'pointer'
-                    }}>
-                        <input
-                            type="checkbox"
-                            checked={showReadFilter}
-                            onChange={(e) => setShowReadFilter(e.target.checked)}
-                            style={{ margin: 0 }}
-                        />
-                        Include read notifications
-                    </label>
-
-                    <button
-                        className="btn-secondary"
-                        onClick={() => window.location.href = '/job-matching/notification-settings'}
-                        style={{
-                            padding: '8px 16px',
-                            fontSize: '14px'
-                        }}
-                    >
-                        <FiSettings style={{ marginRight: '8px' }} /> Settings
-                    </button>
-                </div>
+                    <input
+                        type="checkbox"
+                        checked={showReadFilter}
+                        onChange={(e) => setShowReadFilter(e.target.checked)}
+                        style={{ margin: 0 }}
+                    />
+                    Include read notifications
+                </label>
+                <button
+                    className="btn-secondary"
+                    onClick={() => window.location.href = '/job-matching/notification-settings'}
+                    style={{
+                        padding: '8px 16px',
+                        fontSize: '14px'
+                    }}
+                >
+                    <FiSettings style={{ marginRight: '8px' }} /> Settings
+                </button>
             </div>
         </div>
     );
@@ -241,7 +187,7 @@ function EmptyNotificationsState({ activeFilter }) {
                 return {
                     title: 'No job matches yet',
                     message: 'Update your profile and preferences to receive personalized job recommendations.',
-                    icon: <FiTarget />
+                    emoji: '🎯'
                 };
             case 'deadline':
                 return {
@@ -261,12 +207,15 @@ function EmptyNotificationsState({ activeFilter }) {
     const emptyState = getEmptyMessage(activeFilter);
 
     return (
-        <div className="glass-panel animate-fade-in" style={{
+        <div style={{
             textAlign: 'center',
-            padding: '64px 32px'
+            padding: '64px 32px',
+            background: 'white',
+            border: '1px solid var(--secondary-200)',
+            borderRadius: '8px'
         }}>
             <div style={{ fontSize: '64px', marginBottom: '24px' }}>
-                {emptyState.emoji}
+                {emptyState.emoji || '🔔'}
             </div>
             <h3 style={{
                 fontSize: '24px',
@@ -311,16 +260,18 @@ function EmptyNotificationsState({ activeFilter }) {
 // Loading State Component
 function LoadingState() {
     return (
-        <div className="glass-panel animate-fade-in" style={{
+        <div style={{
             textAlign: 'center',
-            padding: '48px 32px'
+            padding: '48px 32px',
+            background: 'white',
+            border: '1px solid var(--secondary-200)',
+            borderRadius: '8px'
         }}>
             <div style={{
                 fontSize: '48px',
-                marginBottom: '24px',
-                animation: 'spin 1s linear infinite'
+                marginBottom: '24px'
             }}>
-                <div style={{ fontSize: '18px', marginRight: '8px' }}><FiBell /></div>
+                <FiBell color="var(--secondary-400)" />
             </div>
             <h3 style={{
                 fontSize: '18px',
@@ -345,33 +296,29 @@ export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [activeFilter, setActiveFilter] = useState('all');
-    const [showReadFilter, setShowReadFilter] = useState(false);
+    const [activeTab, setActiveTab] = useState('all');
+
+    const counts = useMemo(() => {
+        return {
+            total: notifications.length,
+            unread: notifications.filter(n => !n.isRead).length,
+            newJob: notifications.filter(n => n.type === 'new_job').length,
+            deadline: notifications.filter(n => n.type === 'deadline_reminder').length
+        };
+    }, [notifications]);
 
     const filteredNotifications = useMemo(() => {
-        let filtered = notifications;
-
-        // Apply read filter first
-        if (!showReadFilter) {
-            filtered = filtered.filter(n => !n.isRead);
-        }
-
-        // Apply type filter
-        switch (activeFilter) {
+        switch(activeTab) {
             case 'unread':
-                return filtered.filter(n => !n.isRead);
-            case 'job_match':
-                return filtered.filter(n => n.type === 'job_match');
-            case 'deadline':
-                return filtered.filter(n => n.type === 'deadline');
-            case 'application':
-                return filtered.filter(n => n.type === 'application');
-            case 'system':
-                return filtered.filter(n => n.type === 'system');
+                return notifications.filter(n => !n.isRead);
+            case 'new_job':
+                return notifications.filter(n => n.type === 'new_job');
+            case 'deadline_reminder':
+                return notifications.filter(n => n.type === 'deadline_reminder');
             default:
-                return filtered;
+                return notifications;
         }
-    }, [notifications, activeFilter, showReadFilter]);
+    }, [notifications, activeTab]);
 
     useEffect(() => {
         if (!ready) return;
@@ -391,105 +338,130 @@ export default function Notifications() {
         load();
     }, [ready]);
 
+    const handleMarkAllRead = async () => {
+        // Mock implementation
+        const updatedNotifications = notifications.map(n => ({ ...n, isRead: true }));
+        setNotifications(updatedNotifications);
+    };
+
+    const handleSettings = () => {
+        window.location.href = '/job-matching/notification-settings';
+    };
+
+    if (authError) {
+        return (
+            <div className="page">
+                <div className="container">
+                    <div style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        background: 'var(--error-50)',
+                        border: '1px solid var(--error-200)',
+                        borderRadius: '8px',
+                        color: 'var(--error-600)'
+                    }}>
+                        {authError}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="page">
+                <div className="container">
+                    <div style={{ 
+                        textAlign: 'center', 
+                        padding: '40px 20px',
+                        background: 'white',
+                        borderRadius: '8px',
+                        border: '1px solid var(--secondary-200)'
+                    }}>
+                        <div style={{ marginBottom: '16px' }}>
+                            <FiBell size={32} color="var(--secondary-400)" />
+                        </div>
+                        <p style={{ margin: 0, color: 'var(--secondary-600)' }}>Loading notifications...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="page">
             <div className="container">
-                <div className="page-header">
-                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <FiBell /> Notification Center
-                    </h1>
-                    <p className="page-subtitle">
-                        Stay updated with job matches, deadlines, and application updates
-                    </p>
-                </div>
+                <NotificationHeader 
+                    unreadCount={counts.unread}
+                    onMarkAllRead={handleMarkAllRead}
+                    onSettings={handleSettings}
+                />
 
-                {authError && (
-                    <div className="glass-panel" style={{ 
-                        background: 'var(--error-500)20',
-                        border: '1px solid var(--error-500)30',
-                        color: 'var(--error-500)',
-                        textAlign: 'center',
-                        padding: '20px',
-                        marginBottom: '24px'
-                    }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
-                        <div style={{ fontWeight: '600' }}>{authError}</div>
-                    </div>
+                {notifications.length > 0 && (
+                    <NotificationTabs 
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        counts={counts}
+                    />
                 )}
 
                 {error && (
-                    <div className="glass-panel" style={{ 
-                        background: 'var(--error-500)20',
-                        border: '1px solid var(--error-500)30',
-                        color: 'var(--error-500)',
-                        textAlign: 'center',
-                        padding: '20px',
-                        marginBottom: '24px'
+                    <div style={{
+                        padding: '16px',
+                        background: 'var(--error-50)',
+                        border: '1px solid var(--error-200)',
+                        borderRadius: '8px',
+                        color: 'var(--error-600)',
+                        marginBottom: '16px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
-                        <div style={{ fontWeight: '600' }}>{error}</div>
-                        <button 
-                            className="btn-secondary" 
-                            onClick={() => window.location.reload()}
-                            style={{ marginTop: '16px' }}
-                        >
-                            🔄 Retry
-                        </button>
+                        {error}
                     </div>
                 )}
 
-                {!ready && (
-                    <div className="glass-panel" style={{ 
-                        textAlign: 'center',
-                        padding: '20px',
-                        marginBottom: '24px'
-                    }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}><FiZap /></div>
-                        <div>Starting demo session…</div>
-                    </div>
-                )}
-
-                {loading && <LoadingState />}
-
-                {ready && !loading && !error && (
-                    <>
-                        {notifications.length > 0 && (
-                            <NotificationStats notifications={notifications} />
-                        )}
-
-                        <NotificationFilters
-                            notifications={notifications}
-                            activeFilter={activeFilter}
-                            setActiveFilter={setActiveFilter}
-                            showReadFilter={showReadFilter}
-                            setShowReadFilter={setShowReadFilter}
-                        />
-
-                        {filteredNotifications.length > 0 ? (
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr',
-                                gap: '16px'
-                            }}>
-                                {filteredNotifications.map((notification, index) => (
-                                    <div
-                                        key={notification._id}
-                                        className="animate-fade-in"
-                                        style={{
-                                            animationDelay: `${index * 50}ms`
-                                        }}
-                                    >
-                                        <NotificationItem 
-                                            notification={notification}
-                                        />
-                                    </div>
-                                ))}
+                <div style={{
+                    background: 'white',
+                    border: '1px solid var(--secondary-200)',
+                    borderRadius: '8px'
+                }}>
+                    {filteredNotifications.length > 0 ? (
+                        filteredNotifications.map((notification, index) => (
+                            <div key={notification._id || index}>
+                                <NotificationItem notification={notification} />
+                                {index < filteredNotifications.length - 1 && (
+                                    <div style={{ 
+                                        height: '1px', 
+                                        background: 'var(--secondary-100)',
+                                        margin: '0 16px'
+                                    }} />
+                                )}
                             </div>
-                        ) : (
-                            <EmptyNotificationsState activeFilter={activeFilter} />
-                        )}
-                    </>
-                )}
+                        ))
+                    ) : (
+                        <div style={{
+                            textAlign: 'center',
+                            padding: '60px 20px',
+                            color: 'var(--secondary-500)'
+                        }}>
+                            <FiBell size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                            <h3 style={{ 
+                                margin: '0 0 8px 0',
+                                fontSize: '16px',
+                                fontWeight: '500'
+                            }}>
+                                No notifications
+                            </h3>
+                            <p style={{ 
+                                margin: 0,
+                                fontSize: '14px'
+                            }}>
+                                {activeTab === 'unread' 
+                                    ? "You're all caught up!" 
+                                    : "We'll notify you when there are updates."
+                                }
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
