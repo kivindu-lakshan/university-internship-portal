@@ -176,10 +176,36 @@ const getSavedJobs = async (req, res) => {
     }
 };
 
+// @desc    Manually trigger deadline reminder check
+// @route   POST /api/jobs/check-deadline-reminders
+// @access  Private
+const checkDeadlineReminders = async (req, res) => {
+    try {
+        const { manualDeadlineCheck } = require('../services/deadlineReminderService');
+        
+        // For testing purposes, allow any authenticated user to trigger this
+        console.log(`Manual deadline check triggered by user: ${req.user.email}`);
+        
+        await manualDeadlineCheck();
+        
+        res.status(200).json({ 
+            success: true,
+            message: 'Deadline reminder check initiated successfully' 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            success: false,
+            message: 'Error triggering deadline check', 
+            error: error.message 
+        });
+    }
+};
+
 module.exports = {
     searchJobs,
     getRecommendedJobs,
     saveJob,
     removeSavedJob,
-    getSavedJobs
+    getSavedJobs,
+    checkDeadlineReminders
 };

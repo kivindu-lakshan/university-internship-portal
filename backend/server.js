@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
+const { initializeDeadlineScheduler } = require('./job_matching_component/services/deadlineReminderService');
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -33,8 +34,12 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./job_matching_component/routes/jobRoutes'));
 app.use('/api/notifications', require('./job_matching_component/routes/notificationRoutes'));
 
+// Initialize deadline reminder scheduler
+initializeDeadlineScheduler();
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Deadline reminder system activated`);
 });

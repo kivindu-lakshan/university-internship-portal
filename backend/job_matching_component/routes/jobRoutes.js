@@ -7,7 +7,8 @@ const {
     getRecommendedJobs,
     saveJob,
     removeSavedJob,
-    getSavedJobs
+    getSavedJobs,
+    checkDeadlineReminders
 } = require('../controllers/jobController');
 
 // @route   GET /api/jobs/search
@@ -34,5 +35,10 @@ router.delete('/save/:id', protect, removeSavedJob);
 // @desc    Get saved jobs for current user
 // @access  Private
 router.get('/saved', protect, getSavedJobs);
+
+// @route   POST /api/jobs/check-deadline-reminders
+// @desc    Manually trigger deadline reminder check (for testing)
+// @access  Private
+router.post('/check-deadline-reminders', protect, checkDeadlineReminders);
 
 module.exports = router;

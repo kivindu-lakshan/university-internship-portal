@@ -13,6 +13,13 @@ const savedJobSchema = new mongoose.Schema(
             ref: 'Job',
             required: true,
             index: true
+        },
+        reminderSent: {
+            type: Boolean,
+            default: false
+        },
+        reminderSentAt: {
+            type: Date
         }
     },
     {
