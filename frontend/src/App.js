@@ -9,6 +9,7 @@ import SavedJobs from './job_matching_component/pages/SavedJobs';
 import Notifications from './job_matching_component/pages/Notifications';
 import NotificationSettings from './job_matching_component/pages/NotificationSettings';
 import Dashboard from './job_matching_component/pages/Dashboard';
+import OpportunityCentre from './job_matching_component/pages/OpportunityCentre';
 
 // Theme Context
 const ThemeContext = React.createContext();
@@ -28,6 +29,7 @@ function Navigation() {
     
     const navItems = [
         { path: '/job-matching/dashboard', label: 'Dashboard', icon: '📊' },
+        { path: '/job-matching/opportunity', label: 'Opportunity Center', icon: '🎯' },
         { path: '/job-matching/search', label: 'Search Jobs', icon: '🔍' },
         { path: '/job-matching/recommended', label: 'Recommended', icon: '⭐' },
         { path: '/job-matching/saved', label: 'Saved Jobs', icon: '💾' },
@@ -120,6 +122,14 @@ function App() {
                             element={
                                 <PageWrapper>
                                     <Dashboard />
+                                </PageWrapper>
+                            } 
+                        />
+                        <Route 
+                            path="/job-matching/opportunity" 
+                            element={
+                                <PageWrapper delay={100}>
+                                    <OpportunityCentre />
                                 </PageWrapper>
                             } 
                         />
