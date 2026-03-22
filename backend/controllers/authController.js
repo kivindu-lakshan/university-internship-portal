@@ -167,10 +167,28 @@ const demoLogin = async (req, res) => {
         }
 
         const email = 'student.demo@careersync.test';
-        const user = await User.findOne({ email });
+        let user = await User.findOne({ email });
+
         if (!user) {
-            return res.status(400).json({
-                message: 'Demo user not found. Run the seed script first.'
+            user = await User.findOne({ role: 'student', isVerified: true }).sort({ createdAt: 1 });
+        }
+
+        if (!user) {
+            user = await User.create({
+                name: 'Demo Student',
+                email,
+                password: 'Password123!',
+                role: 'student',
+                isVerified: true,
+                skills: ['React', 'JavaScript', 'Node.js', 'MongoDB'],
+                preferredLocation: 'Remote',
+                preferredJobType: 'Internship',
+                notificationSettings: {
+                    emailNotifications: true,
+                    newJobAlerts: true,
+                    deadlineReminders: true,
+                    applicationUpdates: true
+                }
             });
         }
 

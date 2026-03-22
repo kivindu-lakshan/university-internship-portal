@@ -40,6 +40,16 @@ const disconnect = async () => {
 // ============= DEMO DATA =============
 const DEMO_STUDENTS = [
     {
+        email: 'student.demo@careersync.test',
+        password: 'Password123!',
+        name: 'Demo Student',
+        role: 'student',
+        isVerified: true,
+        skills: ['React', 'JavaScript', 'Node.js', 'MongoDB'],
+        preferredLocation: 'Remote',
+        preferredJobType: 'Internship'
+    },
+    {
         email: 'student1@careersync.test',
         password: 'Password123!',
         name: 'Alex Johnson',
@@ -243,7 +253,7 @@ const seedSavedJobs = async (students, jobs) => {
     log('🔍', 'Seeding Saved Jobs...');
     
     // Clear previous saved jobs
-    await SavedJob.deleteMany({ studentId: { $in: students.map(s => s._id) } });
+    await SavedJob.deleteMany({ userId: { $in: students.map(s => s._id) } });
 
     const savedJobs = [];
     for (let i = 0; i < students.length; i++) {
@@ -251,7 +261,7 @@ const seedSavedJobs = async (students, jobs) => {
             const jobIndex = (i * 3 + j) % jobs.length;
             try {
                 const savedJob = await SavedJob.create({
-                    studentId: students[i]._id,
+                    userId: students[i]._id,
                     jobId: jobs[jobIndex]._id
                 });
                 savedJobs.push(savedJob);
@@ -349,7 +359,7 @@ const seedNotifications = async (students) => {
     await Notification.deleteMany({ userId: { $in: students.map(s => s._id) } });
 
     const notifications = [];
-    const types = ['new_job', 'deadline_reminder', 'application_update', 'interview_scheduled', 'review_request'];
+    const types = ['new_job', 'deadline_reminder', 'application_update', 'other', 'other'];
     const messages = [
         'New internship matching your skills is available.',
         'Application deadline for Frontend Intern is tomorrow.',
