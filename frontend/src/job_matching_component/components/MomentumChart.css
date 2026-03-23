@@ -2,7 +2,7 @@
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
-    padding: var(--space-6);
+    padding: var(--space-4);
     backdrop-filter: blur(20px);
 }
 
@@ -32,7 +32,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-3);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
 }
 
 .momentum-stat {
@@ -86,9 +86,9 @@
     display: flex;
     align-items: flex-end;
     gap: var(--space-4);
-    min-height: 200px;
+    min-height: 150px;
     justify-content: space-around;
-    padding: var(--space-4) 0;
+    padding: var(--space-2) 0;
 }
 
 .bar-group {
@@ -111,7 +111,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 150px;
+    height: 120px;
     justify-content: flex-end;
     width: 100%;
 }

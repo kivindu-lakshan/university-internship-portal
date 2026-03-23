@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FiSearch, FiBriefcase, FiBarChart, FiStar } from 'react-icons/fi';
+import { FiSearch, FiBriefcase, FiBarChart, FiStar, FiGrid, FiList, FiRotateCw, FiAlertTriangle } from 'react-icons/fi';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import JobCard from '../components/JobCard';
@@ -7,15 +7,15 @@ import { getSavedJobs, saveJob, searchJobs } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
 // Results Header Component
-function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode }) {
+function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode, embedded = false }) {
     return (
-        <div className="glass-panel" style={{
+        <div className={embedded ? '' : 'glass-panel'} style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '16px',
-            padding: '16px 24px'
+            gap: embedded ? '10px' : '16px',
+            padding: embedded ? '0' : '16px 24px'
         }}>
             <div style={{
                 display: 'flex',
@@ -45,7 +45,7 @@ function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode 
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '6px'
                 }}>
                     <label style={{
                         fontSize: '14px',
@@ -62,7 +62,7 @@ function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode 
                             borderRadius: '8px',
                             border: '1px solid var(--secondary-300)',
                             background: 'var(--background)',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: '500',
                             color: 'var(--secondary-700)'
                         }}
@@ -74,43 +74,42 @@ function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode 
                         <option value="deadline">Application Deadline</option>
                     </select>
                 </div>
-                
-                {/* View Mode Toggle */}
+
                 <div style={{
                     display: 'flex',
                     background: 'var(--secondary-200)',
                     borderRadius: '8px',
-                    padding: '4px'
+                    padding: '3px'
                 }}>
                     <button
                         onClick={() => setViewMode('grid')}
                         style={{
-                            padding: '8px 12px',
+                            padding: '7px 10px',
                             border: 'none',
                             borderRadius: '6px',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: '500',
                             background: viewMode === 'grid' ? 'var(--primary-500)' : 'transparent',
                             color: viewMode === 'grid' ? 'white' : 'var(--secondary-600)',
                             cursor: 'pointer'
                         }}
                     >
-                        ⚏ Grid
+                        <FiGrid style={{ marginRight: '4px' }} /> Grid
                     </button>
                     <button
                         onClick={() => setViewMode('list')}
                         style={{
-                            padding: '8px 12px',
+                            padding: '7px 10px',
                             border: 'none',
                             borderRadius: '6px',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: '500',
                             background: viewMode === 'list' ? 'var(--primary-500)' : 'transparent',
                             color: viewMode === 'list' ? 'white' : 'var(--secondary-600)',
                             cursor: 'pointer'
                         }}
                     >
-                        ☰ List
+                        <FiList style={{ marginRight: '4px' }} /> List
                     </button>
                 </div>
             </div>
@@ -125,8 +124,8 @@ function EmptyState({ query, hasFilters }) {
             textAlign: 'center',
             padding: '64px 32px'
         }}>
-            <div style={{ fontSize: '64px', marginBottom: '24px' }}>
-                {query ? '🔍' : '💼'}
+            <div style={{ fontSize: '64px', marginBottom: '24px', display: 'flex', justifyContent: 'center' }}>
+                {query ? <FiSearch /> : <FiBriefcase />}
             </div>
             <h3 style={{
                 fontSize: '24px',
@@ -158,7 +157,7 @@ function EmptyState({ query, hasFilters }) {
                     flexWrap: 'wrap'
                 }}>
                     <button className="btn-secondary" onClick={() => window.location.reload()}>
-                        🔄 Clear filters
+                        <FiRotateCw style={{ marginRight: '6px' }} /> Clear filters
                     </button>
                     <button 
                         className="btn-primary"
@@ -184,7 +183,7 @@ function LoadingState() {
                 marginBottom: '24px',
                 animation: 'spin 1s linear infinite'
             }}>
-                🔄
+                <FiRotateCw />
             </div>
             <h3 style={{
                 fontSize: '18px',
@@ -300,33 +299,49 @@ export default function JobSearch() {
     return (
         <div className="page">
             <div className="container">
-                <div className="page-header">
-                    <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <FiSearch /> Advanced Job Search
-                    </h1>
-                    <p className="page-subtitle">
-                        Discover internships and part-time opportunities with AI-powered matching
-                    </p>
-                </div>
-
                 {/* Search Interface */}
-                <div style={{
+                <div className="search-interface-grid" style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr',
-                    gap: '20px',
-                    marginBottom: '32px'
+                    gap: '12px',
+                    alignItems: 'start',
+                    marginBottom: '16px'
                 }}>
-                    <SearchBar 
-                        value={query} 
-                        onChange={setQuery} 
-                        onSearch={loadJobs}
-                        placeholder="Search by title, skills, company, or keywords..." 
-                    />
-                    <FilterPanel 
-                        filters={filters} 
-                        onChange={setFilters} 
-                        onApply={loadJobs} 
-                    />
+                    <div className="glass-panel" style={{ padding: '14px' }}>
+                        <div className="search-top-row" style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'minmax(320px, 1.4fr) minmax(320px, 1fr)',
+                            gap: '12px',
+                            alignItems: 'center'
+                        }}>
+                            <SearchBar 
+                                value={query} 
+                                onChange={setQuery} 
+                                onSearch={loadJobs}
+                                placeholder="Search by title, skills, company, or keywords..."
+                                embedded={true}
+                            />
+
+                            <ResultsHeader
+                                total={sortedJobs.length}
+                                query={query}
+                                sortBy={sortBy}
+                                setSortBy={setSortBy}
+                                viewMode={viewMode}
+                                setViewMode={setViewMode}
+                                embedded={true}
+                            />
+                        </div>
+
+                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--glass-border)' }}>
+                            <FilterPanel 
+                                filters={filters} 
+                                onChange={setFilters} 
+                                onApply={loadJobs}
+                                embedded={true}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Error State */}
@@ -337,16 +352,16 @@ export default function JobSearch() {
                         color: 'var(--error-500)',
                         textAlign: 'center',
                         padding: '20px',
-                        marginBottom: '24px'
+                        marginBottom: '14px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><FiAlertTriangle /></div>
                         <div style={{ fontWeight: '600' }}>{error}</div>
                         <button 
                             className="btn-secondary" 
                             onClick={loadJobs}
                             style={{ marginTop: '16px' }}
                         >
-                            🔄 Try Again
+                            <FiRotateCw style={{ marginRight: '6px' }} /> Try Again
                         </button>
                     </div>
                 )}
@@ -359,23 +374,16 @@ export default function JobSearch() {
                     <>
                         {sortedJobs.length > 0 ? (
                             <>
-                                <ResultsHeader
-                                    total={sortedJobs.length}
-                                    query={query}
-                                    sortBy={sortBy}
-                                    setSortBy={setSortBy}
-                                    viewMode={viewMode}
-                                    setViewMode={setViewMode}
-                                />
-                                
-                                <div style={{ marginTop: '24px' }}>
+                                <div style={{ marginTop: '4px' }}>
                                     <div 
                                         className={viewMode === 'grid' ? 'modern-grid' : 'list-view'}
                                         style={viewMode === 'list' ? {
                                             display: 'grid',
                                             gridTemplateColumns: '1fr',
-                                            gap: '16px'
-                                        } : {}}
+                                            gap: '12px'
+                                        } : {
+                                            marginTop: '0'
+                                        }}
                                     >
                                         {sortedJobs.map((job, index) => (
                                             <div
@@ -403,6 +411,18 @@ export default function JobSearch() {
                     </>
                 )}
             </div>
+
+            <style jsx>{`
+                @media (max-width: 900px) {
+                    .search-interface-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+
+                    .search-top-row {
+                        grid-template-columns: 1fr !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

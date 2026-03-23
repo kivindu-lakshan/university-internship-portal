@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiRefreshCw, FiAlertCircle, FiArrowRight } from 'react-icons/fi';
+import { FiRefreshCw, FiAlertCircle, FiArrowRight, FiTarget, FiZap, FiCalendar, FiAlertTriangle } from 'react-icons/fi';
 import { jobService } from '../../services/jobService';
 import ScoreGauge from '../components/ScoreGauge';
 import ActionQueue from '../components/ActionQueue';
@@ -76,7 +76,7 @@ function OpportunityCentre() {
             <div className="opp-header">
                 <div>
                     <h1 className="opp-title">
-                        <span className="title-icon">🎯</span>
+                        <span className="title-icon"><FiTarget /></span>
                         Opportunity Command Center
                     </h1>
                     <p className="opp-subtitle">Intelligent insights to land your next internship</p>
@@ -91,24 +91,42 @@ function OpportunityCentre() {
                 </button>
             </div>
 
-            {/* Quick Stats */}
-            {dashboard?.stats && (
-                <div className="quick-stats-grid">
-                    <div className="stat-card stat-card-1">
-                        <div className="stat-number">{dashboard.stats.totalOpportunities}</div>
-                        <div className="stat-label">Total Opportunities</div>
-                    </div>
-                    <div className="stat-card stat-card-2">
-                        <div className="stat-number">{dashboard.stats.averageScore}</div>
-                        <div className="stat-label">Average Score</div>
-                    </div>
-                    <div className="stat-card stat-card-3">
-                        <div className="stat-number">{dashboard.stats.appliedCount}</div>
-                        <div className="stat-label">Applications Sent</div>
-                    </div>
-                    <div className={`stat-card stat-card-4 ${dashboard.stats.highRiskCount > 0 ? 'at-risk' : ''}`}>
-                        <div className="stat-number">{dashboard.stats.highRiskCount}</div>
-                        <div className="stat-label">At Risk</div>
+            {/* Top Opportunities List */}
+            {dashboard?.topOpportunities && dashboard.topOpportunities.length > 0 && (
+                <div className="top-opportunities-section">
+                    <h2 className="section-title">
+                        <span className="icon"><FiZap /></span> Top Opportunities This Week
+                    </h2>
+                    <div className="opportunities-grid">
+                        {dashboard.topOpportunities.map((opp, idx) => (
+                            <div
+                                key={idx}
+                                className={`opp-card ${selectedOpportunity?._id === opp._id ? 'selected' : ''}`}
+                                onClick={() => setSelectedOpportunity(opp)}
+                            >
+                                <div className="opp-card-header">
+                                    <h3>{opp.jobId?.title}</h3>
+                                    <span className={`score-badge score-${
+                                        opp.overallSuccessScore >= 75 ? 'high' :
+                                        opp.overallSuccessScore >= 50 ? 'medium' : 'low'
+                                    }`}>
+                                        {opp.overallSuccessScore}%
+                                    </span>
+                                </div>
+                                <div className="opp-card-body">
+                                    <p className="company">{opp.jobId?.company}</p>
+                                    <p className="deadline">
+                                        <FiCalendar /> {opp.daysUntilDeadline > 0 ? `${opp.daysUntilDeadline} days left` : 'Deadline passed'}
+                                    </p>
+                                    <div className="card-actions">
+                                        <span className={`status ${opp.applicationStatus}`}>
+                                            {opp.applicationStatus.replace('_', ' ').toUpperCase()}
+                                        </span>
+                                        <FiArrowRight className="card-arrow" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
@@ -153,52 +171,12 @@ function OpportunityCentre() {
                 </div>
             </div>
 
-            {/* Top Opportunities List */}
-            {dashboard?.topOpportunities && dashboard.topOpportunities.length > 0 && (
-                <div className="top-opportunities-section">
-                    <h2 className="section-title">
-                        <span className="icon">⚡</span> Top Opportunities This Week
-                    </h2>
-                    <div className="opportunities-grid">
-                        {dashboard.topOpportunities.map((opp, idx) => (
-                            <div
-                                key={idx}
-                                className={`opp-card ${selectedOpportunity?._id === opp._id ? 'selected' : ''}`}
-                                onClick={() => setSelectedOpportunity(opp)}
-                            >
-                                <div className="opp-card-header">
-                                    <h3>{opp.jobId?.title}</h3>
-                                    <span className={`score-badge score-${
-                                        opp.overallSuccessScore >= 75 ? 'high' :
-                                        opp.overallSuccessScore >= 50 ? 'medium' : 'low'
-                                    }`}>
-                                        {opp.overallSuccessScore}%
-                                    </span>
-                                </div>
-                                <div className="opp-card-body">
-                                    <p className="company">{opp.jobId?.company}</p>
-                                    <p className="deadline">
-                                        📅 {opp.daysUntilDeadline > 0 ? `${opp.daysUntilDeadline} days left` : 'Deadline passed'}
-                                    </p>
-                                    <div className="card-actions">
-                                        <span className={`status ${opp.applicationStatus}`}>
-                                            {opp.applicationStatus.replace('_', ' ').toUpperCase()}
-                                        </span>
-                                        <FiArrowRight className="card-arrow" />
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
             {/* At-Risk Opportunities Alert */}
             {dashboard?.atRiskOpportunities && dashboard.atRiskOpportunities.length > 0 && (
                 <div className="at-risk-section">
                     <div className="at-risk-header">
                         <h2 className="section-title">
-                            <span className="icon-alert">⚠️</span> Attention Needed: {dashboard.atRiskOpportunities.length} Opportunity(ies)
+                            <span className="icon-alert"><FiAlertTriangle /></span> Attention Needed: {dashboard.atRiskOpportunities.length} Opportunity(ies)
                         </h2>
                     </div>
                     <div className="at-risk-list">

@@ -9,7 +9,7 @@ const SEARCH_SUGGESTIONS = [
     'Software Engineer', 'Web Developer', 'Mobile Developer'
 ];
 
-export default function SearchBar({ value, onChange, onSearch, isLoading = false }) {
+export default function SearchBar({ value, onChange, onSearch, isLoading = false, embedded = false }) {
     const [isSearching, setIsSearching] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -119,7 +119,11 @@ export default function SearchBar({ value, onChange, onSearch, isLoading = false
     
     return (
         <div className="modern-search-container" style={{ position: 'relative' }}>
-            <form className="glass-panel" onSubmit={handleSubmit} style={{ marginBottom: 0 }}>
+            <form
+                className={embedded ? '' : 'glass-panel'}
+                onSubmit={handleSubmit}
+                style={{ marginBottom: 0, padding: embedded ? 0 : undefined }}
+            >
                 <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" htmlFor="job-search">
                         <FiSearch style={{ marginRight: '8px' }} /> Search Jobs

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiMail, FiAward } from 'react-icons/fi';
 import './ScoreGauge.css';
 
 function ScoreGauge({ opportunity }) {
@@ -68,7 +69,7 @@ function ScoreGauge({ opportunity }) {
 
                 <div className="success-prediction">
                     <div className="prediction-item">
-                        <span className="prediction-icon">📧</span>
+                        <span className="prediction-icon"><FiMail /></span>
                         <div>
                             <p className="prediction-label">Interview Chance</p>
                             <p className="prediction-value">
@@ -77,7 +78,7 @@ function ScoreGauge({ opportunity }) {
                         </div>
                     </div>
                     <div className="prediction-item">
-                        <span className="prediction-icon">🎉</span>
+                        <span className="prediction-icon"><FiAward /></span>
                         <div>
                             <p className="prediction-label">Offer Chance</p>
                             <p className="prediction-value">

@@ -45,15 +45,16 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
                 background: `linear-gradient(135deg, ${color}15, ${color}05)`,
                 border: `1px solid ${color}30`,
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                padding: '16px'
             }}
         >
             <div style={{
                 position: 'absolute',
-                top: '-50px',
-                right: '-50px',
-                width: '100px',
-                height: '100px',
+                top: '-40px',
+                right: '-40px',
+                width: '80px',
+                height: '80px',
                 background: `${color}10`,
                 borderRadius: '50%',
                 zIndex: 0
@@ -61,24 +62,24 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
             
             <div style={{ position: 'relative', zIndex: 1 }}>
                 <div style={{
-                    fontSize: '2.5rem',
-                    marginBottom: '12px'
+                    fontSize: '1.5rem',
+                    marginBottom: '8px'
                 }}>
                     {icon}
                 </div>
                 
                 <div style={{
-                    fontSize: '2rem',
+                    fontSize: '1.4rem',
                     fontWeight: '800',
                     color: color,
-                    marginBottom: '8px',
+                    marginBottom: '4px',
                     fontFamily: 'monospace'
                 }}>
                     {typeof animatedValue === 'number' ? animatedValue : value}
                 </div>
                 
                 <div style={{
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: '600',
                     color: 'var(--secondary-600)',
                     textTransform: 'uppercase',
@@ -86,12 +87,13 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
                 }}>
                     {label}
                 </div>
-                
+
+                {typeof trend === 'number' && (
                     <div style={{
-                        marginTop: '12px',
+                        marginTop: '8px',
                         padding: '4px 8px',
                         borderRadius: '12px',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '600',
                         background: trend > 0 ? 'var(--success-500)20' : 'var(--error-500)20',
                         color: trend > 0 ? 'var(--success-500)' : 'var(--error-500)',
@@ -109,12 +111,28 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
 }
 
 // Activity Timeline Component
-function ActivityTimeline({ activities }) {
+function ActivityTimeline({ activities, onActivityClick, formatRelativeTime }) {
+    const [displayTimes, setDisplayTimes] = useState({});
+
+    useEffect(() => {
+        const updateTimes = () => {
+            const newTimes = {};
+            activities.forEach((activity, index) => {
+                newTimes[index] = formatRelativeTime(activity.timestamp);
+            });
+            setDisplayTimes(newTimes);
+        };
+
+        updateTimes();
+        const interval = setInterval(updateTimes, 60000); // Update every minute
+        return () => clearInterval(interval);
+    }, [activities, formatRelativeTime]);
+
     return (
         <div className="glass-panel">
             <h3 style={{ 
-                margin: '0 0 24px 0',
-                fontSize: '18px',
+                margin: '0 0 16px 0',
+                fontSize: '16px',
                 fontWeight: '700',
                 color: 'var(--secondary-800)',
                 display: 'flex',
@@ -124,34 +142,28 @@ function ActivityTimeline({ activities }) {
                 <FiTrendingUp /> Recent Activity
             </h3>
             
-            <div style={{ position: 'relative' }}>
-                {/* Timeline line */}
-                <div style={{
-                    position: 'absolute',
-                    left: '20px',
-                    top: '0',
-                    bottom: '0',
-                    width: '2px',
-                    background: 'linear-gradient(to bottom, var(--primary-500), var(--accent-500))',
-                    borderRadius: '1px'
-                }} />
-                
+            <div>
                 {activities.map((activity, index) => (
                     <div 
                         key={index}
                         className="animate-fade-in"
+                        onClick={() => onActivityClick?.(activity.path)}
                         style={{
                             display: 'flex',
                             alignItems: 'flex-start',
                             gap: '16px',
-                            marginBottom: index < activities.length - 1 ? '24px' : '0',
-                            animationDelay: `${index * 100}ms`
+                            marginBottom: index < activities.length - 1 ? '14px' : '0',
+                            animationDelay: `${index * 100}ms`,
+                            cursor: activity.path ? 'pointer' : 'default',
+                            borderRadius: '10px',
+                            padding: '8px',
+                            transition: 'background 0.2s ease'
                         }}
                     >
                         {/* Timeline dot */}
                         <div style={{
-                            width: '40px',
-                            height: '40px',
+                            width: '34px',
+                            height: '34px',
                             borderRadius: '50%',
                             background: activity.color || 'var(--primary-500)',
                             display: 'flex',
@@ -184,7 +196,7 @@ function ActivityTimeline({ activities }) {
                                 fontSize: '12px',
                                 color: 'var(--secondary-400)'
                             }}>
-                                {activity.time}
+                                {displayTimes[index] || activity.time}
                             </div>
                         </div>
                     </div>
@@ -194,8 +206,90 @@ function ActivityTimeline({ activities }) {
     );
 }
 
+// Line Chart Component for Activity Snapshot
+function LineChart({ data }) {
+    const points = [
+        { key: 'Applications', value: data.totalApplicationsSent, color: 'var(--primary-500)' },
+        { key: 'Saved', value: data.savedJobsCount, color: 'var(--success-500)' },
+        { key: 'Recommended', value: data.recommendedJobsCount, color: 'var(--accent-500)' },
+        { key: 'Alerts', value: data.notificationsCount, color: 'var(--warning-500)' }
+    ];
+
+    const maxValue = Math.max(...points.map(p => p.value), 1);
+    const width = 240;
+    const height = 86;
+    const padding = 20;
+    const graphWidth = width - padding * 2;
+    const graphHeight = height - padding * 2;
+
+    // Calculate normalized Y positions
+    const xStep = graphWidth / (points.length - 1 || 1);
+    const points_normalized = points.map((point, index) => ({
+        ...point,
+        x: padding + index * xStep,
+        y: padding + graphHeight - (point.value / maxValue) * graphHeight
+    }));
+
+    // Create SVG path for line
+    const pathData = points_normalized
+        .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
+        .join(' ');
+
+    // Create gradient path for fill under line
+    const fillPath = `${pathData} L ${points_normalized[points_normalized.length - 1].x} ${padding + graphHeight} L ${padding} ${padding + graphHeight} Z`;
+
+    return (
+        <div style={{ position: 'relative' }}>
+            <svg width={width} height={height} style={{ display: 'block' }}>
+                {/* Gradient definition */}
+                <defs>
+                    <linearGradient id="lineChartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style={{ stopColor: 'var(--primary-500)', stopOpacity: 0.3 }} />
+                        <stop offset="100%" style={{ stopColor: 'var(--primary-500)', stopOpacity: 0.05 }} />
+                    </linearGradient>
+                </defs>
+
+                {/* Fill under line */}
+                <path d={fillPath} fill="url(#lineChartGradient)" stroke="none" />
+
+                {/* Line */}
+                <path
+                    d={pathData}
+                    stroke="var(--primary-500)"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+
+                {/* Data points (circles) */}
+                {points_normalized.map((p, i) => (
+                    <circle
+                        key={i}
+                        cx={p.x}
+                        cy={p.y}
+                        r="4"
+                        fill="white"
+                        stroke={p.color}
+                        strokeWidth="2"
+                    />
+                ))}
+            </svg>
+
+            {/* Labels below chart */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '11px', color: 'var(--secondary-500)' }}>
+                {points.map((p) => (
+                    <div key={p.key} style={{ textAlign: 'center', flex: 1 }}>
+                        {p.key}: <strong style={{ color: p.color }}>{p.value}</strong>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // Quick Actions Component
-function QuickActions({ onActionClick }) {
+function QuickActions({ onActionClick, stats }) {
     const actions = [
         { 
             id: 'search', 
@@ -230,8 +324,8 @@ function QuickActions({ onActionClick }) {
     return (
         <div className="glass-panel">
             <h3 style={{ 
-                margin: '0 0 24px 0',
-                fontSize: '18px',
+                margin: '0 0 16px 0',
+                fontSize: '16px',
                 fontWeight: '700',
                 color: 'var(--secondary-800)',
                 display: 'flex',
@@ -243,8 +337,8 @@ function QuickActions({ onActionClick }) {
             
             <div style={{ 
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '16px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+                gap: '12px'
             }}>
                 {actions.map((action, index) => (
                     <button
@@ -252,10 +346,10 @@ function QuickActions({ onActionClick }) {
                         className="btn-secondary animate-fade-in"
                         onClick={() => onActionClick(action.path)}
                         style={{
-                            padding: '16px',
+                            padding: '10px 12px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '12px',
+                            gap: '10px',
                             justifyContent: 'flex-start',
                             textAlign: 'left',
                             border: `1px solid ${action.color}30`,
@@ -265,8 +359,8 @@ function QuickActions({ onActionClick }) {
                     >
                         <div style={{
                             fontSize: '24px',
-                            width: '40px',
-                            height: '40px',
+                            width: '30px',
+                            height: '30px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -279,6 +373,24 @@ function QuickActions({ onActionClick }) {
                         <span style={{ fontWeight: '600' }}>{action.label}</span>
                     </button>
                 ))}
+            </div>
+
+            <div style={{
+                marginTop: '12px',
+                borderTop: '1px solid var(--glass-border)',
+                paddingTop: '12px'
+            }}>
+                <div style={{
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: 'var(--secondary-700)',
+                    marginBottom: '8px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.4px'
+                }}>
+                    Activity Snapshot
+                </div>
+                <LineChart data={stats} />
             </div>
         </div>
     );
@@ -295,9 +407,25 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [recentActivities, setRecentActivities] = useState([]);
+
+    const formatRelativeTime = (dateInput) => {
+        if (!dateInput) return 'Just now';
+
+        const date = new Date(dateInput);
+        const now = new Date();
+        const diffMs = now - date;
+        const minutes = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+
+        if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        const days = Math.floor(hours / 24);
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    };
     
     useEffect(() => {
         if (!ready) return;
+
         const load = async () => {
             setLoading(true);
             setError('');
@@ -314,46 +442,77 @@ export default function Dashboard() {
                     recommendedJobsCount: Array.isArray(recommended) ? recommended.length : 0,
                     notificationsCount: Array.isArray(notifications) ? notifications.filter(n => !n.isRead).length : 0
                 });
-                
-                // Generate mock recent activities
-                setRecentActivities([
-                    {
-                        icon: <FiBriefcase />,
-                        title: 'Job Saved',
-                        description: 'Frontend Intern (React) at CareerSync Labs',
-                        time: '2 hours ago',
-                        color: 'var(--success-500)'
-                    },
-                    {
-                        icon: <FiSearch />,
-                        title: 'New Search',
-                        description: 'Searched for "React Developer" positions',
-                        time: '5 hours ago',
-                        color: 'var(--primary-500)'
-                    },
-                    {
+
+                const activityItems = [];
+
+                if (Array.isArray(saved)) {
+                    saved.forEach((savedJob) => {
+                        const title = savedJob?.jobId?.title || 'Saved job';
+                        const company = savedJob?.jobId?.company || 'Company';
+                        const timestamp = savedJob?.dateSaved || savedJob?.createdAt || new Date();
+                        activityItems.push({
+                            icon: <FiBookmark />,
+                            title: 'Job Saved',
+                            description: `${title} at ${company}`,
+                            time: formatRelativeTime(timestamp),
+                            timestamp: timestamp,
+                            sortAt: new Date(timestamp).getTime(),
+                            color: 'var(--success-500)',
+                            path: '/job-matching/saved'
+                        });
+                    });
+                }
+
+                if (Array.isArray(notifications)) {
+                    notifications.forEach((notification) => {
+                        const createdAt = notification?.createdAt || new Date();
+                        activityItems.push({
+                            icon: <FiBell />,
+                            title: 'Notification Received',
+                            description: notification?.message || 'New update received',
+                            time: formatRelativeTime(createdAt),
+                            timestamp: createdAt,
+                            sortAt: new Date(createdAt).getTime(),
+                            color: 'var(--warning-500)',
+                            path: '/job-matching/notifications'
+                        });
+                    });
+                }
+
+                if (Array.isArray(recommended) && recommended.length > 0) {
+                    const latestRecommendedAt = recommended
+                        .map((job) => new Date(job?.updatedAt || job?.createdAt || Date.now()).getTime())
+                        .sort((a, b) => b - a)[0];
+
+                    activityItems.push({
                         icon: <FiStar />,
                         title: 'Recommendations Updated',
-                        description: `${Array.isArray(recommended) ? recommended.length : 0} new job matches found`,
-                        time: '1 day ago',
-                        color: 'var(--accent-500)'
-                    },
-                    {
-                        icon: <FiBell />,
-                        title: 'Notification Received',
-                        description: 'Application deadline reminder',
-                        time: '2 days ago',
-                        color: 'var(--warning-500)'
-                    }
-                ]);
+                        description: `${recommended.length} personalized job matches available`,
+                        time: formatRelativeTime(latestRecommendedAt),
+                        timestamp: latestRecommendedAt,
+                        sortAt: latestRecommendedAt,
+                        color: 'var(--accent-500)',
+                        path: '/job-matching/recommended'
+                    });
+                }
+
+                const dynamicActivities = activityItems
+                    .sort((a, b) => b.sortAt - a.sortAt)
+                    .slice(0, 6)
+                    .map(({ sortAt, ...rest }) => rest);
+
+                setRecentActivities(dynamicActivities);
             } catch (e) {
                 setError(e?.response?.data?.message || 'Unable to load dashboard');
             } finally {
                 setLoading(false);
             }
         };
-        
+
         load();
+
+        const interval = setInterval(load, 60000);
+        return () => clearInterval(interval);
     }, [ready]);
     
     const handleActionClick = (path) => {
@@ -363,13 +522,6 @@ export default function Dashboard() {
     return (
         <div className="page">
             <div className="container">
-                <div className="page-header">
-                    <h1 className="page-title">Job Matching Dashboard</h1>
-                    <p className="page-subtitle">
-                        Your personalized job search command center with AI-powered insights
-                    </p>
-                </div>
-                
                 {authError && (
                     <div className="glass-panel" style={{ 
                         background: 'var(--error-500)20',
@@ -422,8 +574,56 @@ export default function Dashboard() {
                 
                 {ready && !loading && (
                     <>
+                        {/* Welcome Message */}
+                        <div className="glass-panel animate-fade-in" style={{
+                            textAlign: 'center',
+                            background: 'linear-gradient(135deg, var(--primary-500)15, var(--accent-500)15)',
+                            border: '1px solid var(--primary-300)30',
+                            padding: '16px',
+                            marginBottom: '20px'
+                        }}>
+                            <div style={{ fontSize: '28px', marginBottom: '8px', display: 'flex', justifyContent: 'center' }}><FiTarget /></div>
+                            <h2 style={{ 
+                                fontSize: '20px',
+                                fontWeight: '700',
+                                color: 'var(--secondary-800)',
+                                marginBottom: '8px'
+                            }}>
+                                Ready to find your dream job?
+                            </h2>
+                            <p style={{
+                                fontSize: '14px',
+                                color: 'var(--secondary-600)',
+                                maxWidth: '500px',
+                                margin: '0 auto',
+                                lineHeight: '1.4'
+                            }}>
+                                Our AI-powered job matching system has analyzed your profile and found
+                                {stats.recommendedJobsCount > 0 ? ` ${stats.recommendedJobsCount} personalized` : ' amazing'} job
+                                recommendations just for you!
+                            </p>
+                            <button
+                                className="btn-primary"
+                                onClick={() => handleActionClick('/job-matching/recommended')}
+                                style={{
+                                    fontSize: '14px',
+                                    padding: '10px 20px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    marginTop: '12px'
+                                }}
+                            >
+                                <FiZap /> View Recommendations
+                            </button>
+                        </div>
+
                         {/* Stats Grid */}
-                        <div className="modern-grid" style={{ marginBottom: '40px' }}>
+                        <div className="modern-grid" style={{
+                            marginBottom: '20px',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                            gap: '12px'
+                        }}>
                             <StatCard
                                 icon={<FiEdit3 />}
                                 label="Applications Sent"
@@ -459,53 +659,12 @@ export default function Dashboard() {
                         {/* Main Content Grid */}
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-                            gap: '32px',
-                            marginBottom: '40px'
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                            gap: '18px',
+                            marginBottom: '20px'
                         }}>
-                            <QuickActions onActionClick={handleActionClick} />
-                            <ActivityTimeline activities={recentActivities} />
-                        </div>
-                        
-                        {/* Welcome Message */}
-                        <div className="glass-panel animate-fade-in" style={{
-                            textAlign: 'center',
-                            background: 'linear-gradient(135deg, var(--primary-500)15, var(--accent-500)15)',
-                            border: '1px solid var(--primary-300)30'
-                        }}>
-                            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎯</div>
-                            <h2 style={{ 
-                                fontSize: '24px',
-                                fontWeight: '700',
-                                color: 'var(--secondary-800)',
-                                marginBottom: '12px'
-                            }}>
-                                Ready to find your dream job?
-                            </h2>
-                            <p style={{
-                                fontSize: '16px',
-                                color: 'var(--secondary-600)',
-                                maxWidth: '500px',
-                                margin: '0 auto 24px',
-                                lineHeight: '1.6'
-                            }}>
-                                Our AI-powered job matching system has analyzed your profile and found
-                                {stats.recommendedJobsCount > 0 ? ` ${stats.recommendedJobsCount} personalized` : ' amazing'} job
-                                recommendations just for you!
-                            </p>
-                            <button
-                                className="btn-primary"
-                                onClick={() => handleActionClick('/job-matching/recommended')}
-                                style={{
-                                    fontSize: '16px',
-                                    padding: '12px 32px',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '12px'
-                                }}
-                            >
-                                🚀 View Recommendations
-                            </button>
+                            <QuickActions onActionClick={handleActionClick} stats={stats} />
+                            <ActivityTimeline activities={recentActivities} onActivityClick={handleActionClick} formatRelativeTime={formatRelativeTime} />
                         </div>
                     </>
                 )}

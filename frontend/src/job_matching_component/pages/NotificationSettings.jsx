@@ -11,12 +11,12 @@ const ToggleSwitch = ({ on, onToggle, label, description, disabled = false }) =>
             justifyContent: 'space-between',
             alignItems: 'flex-start',
             gap: '16px',
-            padding: '16px 0',
+            padding: '14px 0',
             borderBottom: '1px solid var(--secondary-100)'
         }}>
             <div style={{ flex: 1 }}>
                 <div style={{
-                    fontSize: '15px',
+                    fontSize: '14px',
                     fontWeight: '500',
                     color: 'var(--secondary-800)',
                     marginBottom: '4px'
@@ -25,7 +25,7 @@ const ToggleSwitch = ({ on, onToggle, label, description, disabled = false }) =>
                 </div>
                 {description && (
                     <div style={{
-                        fontSize: '13px',
+                        fontSize: '12px',
                         color: 'var(--secondary-600)',
                         lineHeight: '1.4'
                     }}>
@@ -72,14 +72,14 @@ function SettingsSection({ title, children }) {
             background: 'white',
             border: '1px solid var(--secondary-200)',
             borderRadius: '8px',
-            marginBottom: '16px'
+            marginBottom: '14px'
         }}>
             <div style={{
-                padding: '16px 20px',
+                padding: '12px 16px',
                 borderBottom: '1px solid var(--secondary-100)'
             }}>
                 <h3 style={{
-                    fontSize: '16px',
+                    fontSize: '15px',
                     fontWeight: '600',
                     color: 'var(--secondary-800)',
                     margin: 0
@@ -87,7 +87,7 @@ function SettingsSection({ title, children }) {
                     {title}
                 </h3>
             </div>
-            <div style={{ padding: '0 20px' }}>
+            <div style={{ padding: '0 16px' }}>
                 {children}
             </div>
         </div>
@@ -271,14 +271,18 @@ export default function NotificationSettings() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: '24px',
-                    padding: '16px 0',
-                    borderBottom: '1px solid var(--secondary-200)'
+                    marginBottom: '16px',
+                    padding: '12px 14px',
+                    border: '1px solid var(--secondary-200)',
+                    borderRadius: '8px',
+                    background: 'white',
+                    flexWrap: 'wrap',
+                    gap: '10px'
                 }}>
                     <div>
                         <h1 style={{ 
                             margin: '0 0 4px 0', 
-                            fontSize: '20px', 
+                            fontSize: '18px', 
                             fontWeight: '600',
                             color: 'var(--secondary-800)',
                             display: 'flex',
@@ -290,7 +294,7 @@ export default function NotificationSettings() {
                         </h1>
                         <p style={{ 
                             margin: 0, 
-                            fontSize: '14px', 
+                            fontSize: '13px', 
                             color: 'var(--secondary-600)' 
                         }}>
                             Manage how you receive job alerts and updates
@@ -308,11 +312,11 @@ export default function NotificationSettings() {
                             </span>
                         )}
                         <button 
-                            className="btn-outline"
+                            className="btn-secondary"
                             onClick={() => window.location.href = '/job-matching/notifications'}
                             style={{ 
                                 padding: '6px 12px', 
-                                fontSize: '14px',
+                                fontSize: '13px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '4px'
@@ -326,7 +330,7 @@ export default function NotificationSettings() {
                             disabled={saving || !hasUnsavedChanges}
                             style={{
                                 padding: '6px 12px',
-                                fontSize: '14px',
+                                fontSize: '13px',
                                 opacity: (!hasUnsavedChanges && !saving) ? 0.6 : 1,
                                 display: 'flex',
                                 alignItems: 'center',
@@ -381,8 +385,8 @@ export default function NotificationSettings() {
                     background: 'var(--secondary-50)',
                     border: '1px solid var(--secondary-200)',
                     borderRadius: '6px',
-                    padding: '16px',
-                    fontSize: '13px',
+                    padding: '14px',
+                    fontSize: '12px',
                     color: 'var(--secondary-600)',
                     lineHeight: '1.5'
                 }}>

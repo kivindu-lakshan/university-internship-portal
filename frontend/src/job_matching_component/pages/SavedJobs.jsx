@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FiBookmark, FiTarget, FiSearch, FiTrash2, FiZap, FiStar } from 'react-icons/fi';
+import { FiBookmark, FiTarget, FiSearch, FiTrash2, FiZap, FiStar, FiBriefcase, FiCalendar, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, removeSavedJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -38,8 +38,8 @@ function SavedJobsStats({ jobs }) {
 
     const statCards = [
         { label: 'Total Saved', value: stats.totalJobs, icon: <FiBookmark />, color: 'var(--primary-500)' },
-        { label: 'Companies', value: stats.companies, icon: '🏢', color: 'var(--accent-500)' },
-        { label: 'Saved This Week', value: stats.recentlySaved, icon: '📅', color: 'var(--success-500)' },
+        { label: 'Companies', value: stats.companies, icon: <FiBriefcase />, color: 'var(--accent-500)' },
+        { label: 'Saved This Week', value: stats.recentlySaved, icon: <FiCalendar />, color: 'var(--success-500)' },
         { label: 'Top Category', value: stats.topJobType, icon: <FiTarget />, color: 'var(--warning-500)' }
     ];
 
@@ -401,7 +401,7 @@ export default function SavedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><FiAlertTriangle /></div>
                         <div style={{ fontWeight: '600' }}>{authError}</div>
                     </div>
                 )}
@@ -415,14 +415,14 @@ export default function SavedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><FiAlertTriangle /></div>
                         <div style={{ fontWeight: '600' }}>{error}</div>
                         <button 
                             className="btn-secondary" 
                             onClick={load}
                             style={{ marginTop: '16px' }}
                         >
-                            🔄 Retry
+                            <FiRotateCw style={{ marginRight: '6px' }} /> Retry
                         </button>
                     </div>
                 )}
@@ -511,7 +511,7 @@ export default function SavedJobs() {
                                             className="btn-secondary"
                                             onClick={() => setSearchQuery('')}
                                         >
-                                            🔄 Clear Search
+                                            <FiRotateCw style={{ marginRight: '6px' }} /> Clear Search
                                         </button>
                                     </div>
                                 )}

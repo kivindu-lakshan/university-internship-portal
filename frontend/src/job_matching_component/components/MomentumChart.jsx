@@ -1,11 +1,12 @@
 import React from 'react';
+import { FiTrendingUp, FiMail, FiTarget, FiAward, FiBarChart2, FiZap, FiStar } from 'react-icons/fi';
 import './MomentumChart.css';
 
 function MomentumChart({ data = [] }) {
     if (!data || data.length === 0) {
         return (
             <div className="momentum-chart-container">
-                <h3 className="chart-title">📈 Your Momentum</h3>
+                <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiTrendingUp /> Your Momentum</h3>
                 <div className="no-data">
                     <p>No momentum data yet. Start applying to jobs!</p>
                 </div>
@@ -24,26 +25,26 @@ function MomentumChart({ data = [] }) {
 
     return (
         <div className="momentum-chart-container">
-            <h3 className="chart-title">📈 Your Momentum (Weekly)</h3>
+            <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiTrendingUp /> Your Momentum (Weekly)</h3>
 
             {/* Summary Stats */}
             <div className="momentum-summary">
                 <div className="momentum-stat">
-                    <span className="stat-icon applications">📧</span>
+                    <span className="stat-icon applications"><FiMail /></span>
                     <div>
                         <p className="stat-value">{totalApplications}</p>
                         <p className="stat-label">Applications</p>
                     </div>
                 </div>
                 <div className="momentum-stat">
-                    <span className="stat-icon interviews">🎯</span>
+                    <span className="stat-icon interviews"><FiTarget /></span>
                     <div>
                         <p className="stat-value">{totalInterviews}</p>
                         <p className="stat-label">Interviews</p>
                     </div>
                 </div>
                 <div className="momentum-stat">
-                    <span className="stat-icon offers">🎉</span>
+                    <span className="stat-icon offers"><FiAward /></span>
                     <div>
                         <p className="stat-value">{totalOffers}</p>
                         <p className="stat-label">Offers</p>
@@ -114,27 +115,27 @@ function MomentumChart({ data = [] }) {
             <div className="trend-analysis">
                 {totalApplications < 2 && (
                     <p className="trend-message warning">
-                        📉 Low momentum: Aim to apply to 3+ opportunities per week
+                        <FiTrendingUp style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Low momentum: Aim to apply to 3+ opportunities per week
                     </p>
                 )}
                 {totalApplications >= 2 && totalApplications < 5 && (
                     <p className="trend-message neutral">
-                        📊 Good effort: Keep consistency, target 5+ weekly applications
+                        <FiBarChart2 style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Good effort: Keep consistency, target 5+ weekly applications
                     </p>
                 )}
                 {totalApplications >= 5 && (
                     <p className="trend-message success">
-                        🚀 Excellent momentum: Keep this pace and quality high!
+                        <FiZap style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Excellent momentum: Keep this pace and quality high!
                     </p>
                 )}
                 {totalInterviews > 0 && (
                     <p className="trend-message success">
-                        ✨ Great job getting interviews! Focus on interview prep.
+                        <FiStar style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Great job getting interviews! Focus on interview prep.
                     </p>
                 )}
                 {totalOffers > 0 && (
                     <p className="trend-message success">
-                        🎊 Congratulations on the offers! Evaluate carefully.
+                        <FiAward style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Congratulations on the offers! Evaluate carefully.
                     </p>
                 )}
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { FiBarChart2, FiTarget, FiSearch, FiStar, FiBookmark, FiBell, FiSettings, FiMoon, FiSun } from 'react-icons/fi';
 
 import './App.css';
 
@@ -28,13 +29,13 @@ function Navigation() {
     const { theme, toggleTheme } = useTheme();
     
     const navItems = [
-        { path: '/job-matching/dashboard', label: 'Dashboard', icon: '📊' },
-        { path: '/job-matching/opportunity', label: 'Opportunity Center', icon: '🎯' },
-        { path: '/job-matching/search', label: 'Search Jobs', icon: '🔍' },
-        { path: '/job-matching/recommended', label: 'Recommended', icon: '⭐' },
-        { path: '/job-matching/saved', label: 'Saved Jobs', icon: '💾' },
-        { path: '/job-matching/notifications', label: 'Notifications', icon: '🔔' },
-        { path: '/job-matching/notifications/settings', label: 'Settings', icon: '⚙️' }
+        { path: '/job-matching/dashboard', label: 'Dashboard', icon: <FiBarChart2 /> },
+        { path: '/job-matching/opportunity', label: 'Opportunity Center', icon: <FiTarget /> },
+        { path: '/job-matching/search', label: 'Search Jobs', icon: <FiSearch /> },
+        { path: '/job-matching/recommended', label: 'Recommended', icon: <FiStar /> },
+        { path: '/job-matching/saved', label: 'Saved Jobs', icon: <FiBookmark /> },
+        { path: '/job-matching/notifications', label: 'Notifications', icon: <FiBell /> },
+        { path: '/job-matching/notifications/settings', label: 'Settings', icon: <FiSettings /> }
     ];
     
     return (
@@ -63,7 +64,7 @@ function Navigation() {
                         onClick={toggleTheme}
                         title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                     >
-                        {theme === 'light' ? '🌙' : '☀️'}
+                        {theme === 'light' ? <FiMoon /> : <FiSun />}
                     </button>
                 </div>
             </div>

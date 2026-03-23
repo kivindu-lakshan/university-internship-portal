@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiClock, FiAlertTriangle, FiCheckCircle } from 'react-icons/fi';
+import { FiClock, FiAlertTriangle, FiCheckCircle, FiInfo } from 'react-icons/fi';
 import './DeadlineTimeline.css';
 
 function DeadlineTimeline({ opportunity }) {
@@ -31,12 +31,12 @@ function DeadlineTimeline({ opportunity }) {
     };
 
     const getTimelineMessage = () => {
-        if (daysRemaining < 0) return '❌ Deadline Passed';
-        if (daysRemaining === 0) return '🔴 Apply TODAY!';
-        if (daysRemaining <= 3) return '⚡ Critical Window';
-        if (daysRemaining <= 7) return '⚠️ Warning Zone';
-        if (daysRemaining <= 14) return '📅 Good Timing';
-        return '✅ Plenty of Time';
+        if (daysRemaining < 0) return 'Deadline Passed';
+        if (daysRemaining === 0) return 'Apply TODAY!';
+        if (daysRemaining <= 3) return 'Critical Window';
+        if (daysRemaining <= 7) return 'Warning Zone';
+        if (daysRemaining <= 14) return 'Good Timing';
+        return 'Plenty of Time';
     };
 
     return (
@@ -91,7 +91,7 @@ function DeadlineTimeline({ opportunity }) {
             <div className={`recommendation ${opportunity.deadlineStatus}`}>
                 {opportunity.deadlineStatus === 'critical' && (
                     <>
-                        <p className="rec-title">🚨 Critical Alert</p>
+                        <p className="rec-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiAlertTriangle /> Critical Alert</p>
                         <p className="rec-text">
                             Deadline is {daysRemaining <= 0 ? 'PAST' : `in ${daysRemaining} days`}. 
                             Apply immediately if you haven't already!
@@ -101,7 +101,7 @@ function DeadlineTimeline({ opportunity }) {
                 )}
                 {opportunity.deadlineStatus === 'warning' && (
                     <>
-                        <p className="rec-title">⏰ Act Soon</p>
+                        <p className="rec-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiClock /> Act Soon</p>
                         <p className="rec-text">
                             You have {daysRemaining} days. Complete your profile and apply this week.
                         </p>
@@ -110,7 +110,7 @@ function DeadlineTimeline({ opportunity }) {
                 )}
                 {opportunity.deadlineStatus === 'safe' && (
                     <>
-                        <p className="rec-title">✅ Good Timing</p>
+                        <p className="rec-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiCheckCircle /> Good Timing</p>
                         <p className="rec-text">
                             {daysRemaining} days remaining. Take time to tailor your application.
                         </p>
@@ -143,7 +143,7 @@ function DeadlineTimeline({ opportunity }) {
 
             {/* Calendar Integration Hint */}
             <div className="calendar-hint">
-                <p>💡 Tip: Add this deadline to your calendar so you don't miss it!</p>
+                <p style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiInfo /> Tip: Add this deadline to your calendar so you don't miss it!</p>
             </div>
         </div>
     );

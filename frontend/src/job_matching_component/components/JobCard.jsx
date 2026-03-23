@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiDollarSign, FiClock, FiMapPin, FiBriefcase, FiEdit3, FiBookmark, FiCheck, FiStar, FiSend } from 'react-icons/fi';
+import { FiDollarSign, FiClock, FiMapPin, FiBriefcase, FiEdit3, FiBookmark, FiCheck, FiStar, FiSend, FiTrash2 } from 'react-icons/fi';
 
 // Match Percentage Circle Component
 function MatchIndicator({ percentage }) {
@@ -193,7 +193,7 @@ export default function JobCard({
                             border: 'none'
                         }}
                     >
-                        🗑️
+                        <FiTrash2 />
                     </button>
                 ) : (
                     <button

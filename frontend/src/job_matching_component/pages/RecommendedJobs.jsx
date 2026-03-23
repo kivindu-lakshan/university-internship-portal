@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FiTarget, FiZap, FiStar, FiTrendingUp, FiInfo, FiSearch, FiBarChart, FiMonitor, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiTarget, FiZap, FiStar, FiTrendingUp, FiInfo, FiSearch, FiBarChart, FiMonitor, FiChevronLeft, FiChevronRight, FiThumbsUp, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
 import JobCard from '../components/JobCard';
 import { getRecommendedJobs, getSavedJobs, saveJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -109,7 +109,7 @@ function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
             { id: 'all', label: 'All Recommendations', count: jobs.length, icon: <FiTarget /> },
             { id: 'perfect', label: 'Perfect Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 90).length, icon: <FiStar /> },
             { id: 'high', label: 'High Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 70 && (j.matchPercentage || 0) < 90).length, icon: <FiTrendingUp /> },
-            { id: 'good', label: 'Good Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 50 && (j.matchPercentage || 0) < 70).length, icon: '👍' },
+            { id: 'good', label: 'Good Match', count: jobs.filter(j => (j.matchPercentage || 0) >= 50 && (j.matchPercentage || 0) < 70).length, icon: <FiThumbsUp /> },
             { id: 'potential', label: 'Potential', count: jobs.filter(j => (j.matchPercentage || 0) < 50).length, icon: <FiInfo /> }
         ];
         return cats.filter(cat => cat.count > 0);
@@ -343,7 +343,7 @@ export default function RecommendedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><FiAlertTriangle /></div>
                         <div style={{ fontWeight: '600' }}>{authError}</div>
                     </div>
                 )}
@@ -357,14 +357,14 @@ export default function RecommendedJobs() {
                         padding: '20px',
                         marginBottom: '24px'
                     }}>
-                        <div style={{ fontSize: '24px', marginBottom: '12px' }}>⚠️</div>
+                        <div style={{ fontSize: '24px', marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><FiAlertTriangle /></div>
                         <div style={{ fontWeight: '600' }}>{error}</div>
                         <button 
                             className="btn-secondary" 
                             onClick={() => window.location.reload()}
                             style={{ marginTop: '16px' }}
                         >
-                            🔄 Retry
+                            <FiRotateCw style={{ marginRight: '6px' }} /> Retry
                         </button>
                     </div>
                 )}

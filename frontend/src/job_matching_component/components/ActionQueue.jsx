@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiCheckCircle, FiChevronRight, FiZap } from 'react-icons/fi';
+import { FiCheckCircle, FiChevronRight, FiZap, FiBook, FiUser, FiClock, FiPhone, FiArrowRight, FiInfo } from 'react-icons/fi';
 import './ActionQueue.css';
 
 function ActionQueue({ actions = [], opportunity = {} }) {
@@ -8,15 +8,15 @@ function ActionQueue({ actions = [], opportunity = {} }) {
     const getActionIcon = (actionType) => {
         switch (actionType) {
             case 'skill':
-                return '📚';
+                return <FiBook />;
             case 'profile':
-                return '👤';
+                return <FiUser />;
             case 'timing':
-                return '⏰';
+                return <FiClock />;
             case 'followup':
-                return '📞';
+                return <FiPhone />;
             default:
-                return '→';
+                return <FiArrowRight />;
         }
     };
 
@@ -38,7 +38,7 @@ function ActionQueue({ actions = [], opportunity = {} }) {
                     <FiZap /> Next Best Actions
                 </h3>
                 <div className="no-actions">
-                    <p>✓ Perfect! No urgent actions needed.</p>
+                    <p><FiCheckCircle style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Perfect! No urgent actions needed.</p>
                     <p>Keep monitoring this opportunity.</p>
                 </div>
             </div>
@@ -113,13 +113,13 @@ function ActionQueue({ actions = [], opportunity = {} }) {
 
             {/* What-If Simulator */}
             <div className="whatif-simulator">
-                <h4 className="whatif-title">💡 What If You Do All These Actions?</h4>
+                <h4 className="whatif-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiInfo /> What If You Do All These Actions?</h4>
                 <div className="whatif-cards">
                     <div className="whatif-card">
                         <p className="whatif-label">Current Score</p>
                         <p className="whatif-current">{opportunity.overallSuccessScore}%</p>
                     </div>
-                    <div className="whatif-icon">→</div>
+                    <div className="whatif-icon"><FiArrowRight /></div>
                     <div className="whatif-card success">
                         <p className="whatif-label">Potential Score</p>
                         <p className="whatif-potential">

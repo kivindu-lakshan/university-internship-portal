@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiBook, FiChevronDown, FiExternalLink } from 'react-icons/fi';
+import { FiBook, FiChevronDown, FiExternalLink, FiCheckCircle, FiCircle, FiVideo, FiFileText, FiBookOpen, FiClock } from 'react-icons/fi';
 import './SkillGapPanel.css';
 
 function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
@@ -31,7 +31,7 @@ function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
                     <FiBook /> Skill Alignment
                 </h3>
                 <div className="no-gap">
-                    <p>✓ Great! You have most required skills.</p>
+                    <p><FiCheckCircle style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Great! You have most required skills.</p>
                     <p>Focus on strengthening existing abilities.</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
                             <div className="skill-header">
                                 <div className="skill-left">
                                     <span className={`skill-importance ${importance}`}>
-                                        {importance === 'high' ? '●' : importance === 'medium' ? '●' : '●'}
+                                        <FiCircle size={10} />
                                     </span>
                                     <span className="skill-name">{skill}</span>
                                 </div>
@@ -105,10 +105,10 @@ function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
 
                                     <div className="quick-links">
                                         <button className="quick-link">
-                                            📺 Video Tutorial
+                                            <FiVideo style={{ marginRight: '6px' }} /> Video Tutorial
                                         </button>
                                         <button className="quick-link">
-                                            📖 Documentation
+                                            <FiFileText style={{ marginRight: '6px' }} /> Documentation
                                         </button>
                                     </div>
                                 </div>
@@ -120,7 +120,7 @@ function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
 
             {/* Learning Path Suggestion */}
             <div className="learning-path">
-                <h4 className="path-title">📚 Suggested Learning Path</h4>
+                <h4 className="path-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FiBookOpen /> Suggested Learning Path</h4>
                 <div className="path-timeline">
                     <div className="path-step">
                         <div className="step-number">1</div>
@@ -149,7 +149,7 @@ function SkillGapPanel({ skills = [], skillMatchScore = 0 }) {
             {/* Time Estimate */}
             <div className="time-estimate">
                 <p className="estimate-text">
-                    ⏱️ Est. time to learn all skills: <strong>4-6 weeks</strong>
+                    <FiClock style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />Est. time to learn all skills: <strong>4-6 weeks</strong>
                 </p>
             </div>
         </div>

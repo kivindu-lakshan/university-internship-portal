@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiTarget, FiBriefcase, FiMapPin, FiDollarSign, FiTrash2, FiSettings, FiGrid, FiSend } from 'react-icons/fi';
+import { FiTarget, FiBriefcase, FiMapPin, FiDollarSign, FiTrash2, FiSettings, FiGrid, FiSend, FiX } from 'react-icons/fi';
 
 // Salary range presets
 const SALARY_PRESETS = [
@@ -34,18 +34,18 @@ function SalaryRangeSlider({ minValue, maxValue, onChange }) {
     };
     
     return (
-        <div className="salary-range-slider" style={{ position: 'relative', padding: '20px 0' }}>
+        <div className="salary-range-slider" style={{ position: 'relative', padding: '10px 0' }}>
             <div style={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
-                marginBottom: '16px',
+                marginBottom: '10px',
                 alignItems: 'center'
             }}>
                 <span style={{ 
                     background: 'var(--primary-100)',
-                    padding: '4px 12px',
+                    padding: '3px 10px',
                     borderRadius: '20px',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: '600',
                     color: 'var(--primary-700)'
                 }}>
@@ -54,9 +54,9 @@ function SalaryRangeSlider({ minValue, maxValue, onChange }) {
                 <span style={{ color: 'var(--secondary-500)', fontSize: '14px' }}>to</span>
                 <span style={{ 
                     background: 'var(--primary-100)',
-                    padding: '4px 12px',
+                    padding: '3px 10px',
                     borderRadius: '20px',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: '600',
                     color: 'var(--primary-700)'
                 }}>
@@ -64,7 +64,7 @@ function SalaryRangeSlider({ minValue, maxValue, onChange }) {
                 </span>
             </div>
             
-            <div style={{ position: 'relative', height: '6px', marginBottom: '20px' }}>
+            <div style={{ position: 'relative', height: '6px', marginBottom: '8px' }}>
                 <div style={{
                     position: 'absolute',
                     width: '100%',
@@ -158,14 +158,14 @@ function FilterChip({ label, isActive, onClick, onRemove }) {
                         onRemove();
                     }}
                 >
-                    ✕
+                    <FiX />
                 </button>
             )}
         </div>
     );
 }
 
-export default function FilterPanel({ filters, onChange, onApply }) {
+export default function FilterPanel({ filters, onChange, onApply, embedded = false }) {
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [localFilters, setLocalFilters] = useState(filters);
     
@@ -203,16 +203,22 @@ export default function FilterPanel({ filters, onChange, onApply }) {
     const hasActiveFilters = Object.values(localFilters).some(value => value && value.toString().trim());
     
     return (
-        <div className="glass-panel" style={{ position: 'relative' }}>
+        <div
+            className={embedded ? '' : 'glass-panel'}
+            style={{
+                position: 'relative',
+                padding: embedded ? 0 : '16px'
+            }}
+        >
             <div style={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                marginBottom: '24px'
+                marginBottom: '12px'
             }}>
                 <h3 style={{ 
                     margin: 0,
-                    fontSize: '18px',
+                    fontSize: '16px',
                     fontWeight: '700',
                     color: 'var(--secondary-800)',
                     display: 'flex',
@@ -227,7 +233,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         <button
                             className="btn-secondary"
                             onClick={clearAllFilters}
-                            style={{ fontSize: '12px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            style={{ fontSize: '12px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
                         >
                             <FiTrash2 size={14} /> Clear All
                         </button>
@@ -236,7 +242,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                     <button
                         className="btn-secondary"
                         onClick={() => setShowAdvanced(!showAdvanced)}
-                        style={{ fontSize: '12px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        style={{ fontSize: '12px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
                         {showAdvanced ? <><FiGrid size={14} /> Basic</> : <><FiSettings size={14} /> Advanced</>}
                     </button>
@@ -245,7 +251,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
             
             {/* Active Filters Display */}
             {hasActiveFilters && (
-                <div style={{ marginBottom: '20px' }}>
+                <div style={{ marginBottom: '12px' }}>
                     <div style={{ 
                         fontSize: '12px',
                         color: 'var(--secondary-500)',
@@ -256,7 +262,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                     }}>
                         Active Filters
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                         {localFilters.jobType && (
                             <FilterChip
                                 label={`Type: ${localFilters.jobType}`}
@@ -273,7 +279,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         )}
                         {(localFilters.minSalary || localFilters.maxSalary) && (
                             <FilterChip
-                                label={`Salary: $${localFilters.minSalary || '0'} - $${localFilters.maxSalary || '∞'}`}
+                                label={`Salary: $${localFilters.minSalary || '0'} - $${localFilters.maxSalary || 'No limit'}`}
                                 isActive={true}
                                 onRemove={() => set({ minSalary: '', maxSalary: '' })}
                             />
@@ -286,10 +292,10 @@ export default function FilterPanel({ filters, onChange, onApply }) {
             <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: showAdvanced ? 'repeat(auto-fit, minmax(200px, 1fr))' : 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '20px',
-                marginBottom: '24px'
+                gap: '12px',
+                marginBottom: '12px'
             }}>
-                <div className="form-group">
+                <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <FiBriefcase size={16} /> Job Type
                     </label>
@@ -305,7 +311,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                     </select>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <FiMapPin size={16} /> Location
                     </label>
@@ -325,13 +331,13 @@ export default function FilterPanel({ filters, onChange, onApply }) {
             </div>
             
             {/* Salary Filter */}
-            <div className="form-group">
+            <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <FiDollarSign size={16} /> Salary Range
                 </label>
                 
                 {!showAdvanced ? (
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
                         {SALARY_PRESETS.map((preset, index) => (
                             <FilterChip
                                 key={index}
@@ -353,7 +359,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                 )}
                 
                 {showAdvanced && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                         <div>
                             <label className="form-label">Min Salary</label>
                             <input
@@ -387,8 +393,8 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                 display: 'flex', 
                 justifyContent: 'flex-end', 
                 gap: '12px',
-                marginTop: '24px',
-                paddingTop: '24px',
+                marginTop: '12px',
+                paddingTop: '12px',
                 borderTop: '1px solid var(--glass-border)'
             }}>
                 <button 
@@ -398,7 +404,7 @@ export default function FilterPanel({ filters, onChange, onApply }) {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
-                        padding: '12px 24px'
+                        padding: '10px 16px'
                     }}
                 >
                     <FiSend /> Apply Filters
