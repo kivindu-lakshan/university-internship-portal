@@ -50,6 +50,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./job_matching_component/routes/jobRoutes'));
 app.use('/api/notifications', require('./job_matching_component/routes/notificationRoutes'));
 app.use('/api/opportunity', require('./job_matching_component/routes/opportunityRoutes'));
+app.use('/api/ai', require('./job_matching_component/routes/aiChatRoutes'));
 
 // Initialize deadline reminder scheduler
 initializeDeadlineScheduler();

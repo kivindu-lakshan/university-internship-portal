@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FiBriefcase, FiBell, FiTrendingUp, FiSearch, FiBookmark, FiTarget, FiStar, FiEdit3, FiAlertTriangle, FiZap, FiRotateCw } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import { getRecommendedJobs, getSavedJobs } from '../../services/jobService';
 import { getNotifications } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
+import AiCareerChat from '../components/AiCareerChat';
+import { useAuth } from '../../context/AuthContext';
 
 // Modern Stat Card Component
 function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', delay = 0 }) {
@@ -115,7 +118,7 @@ function ActivityTimeline({ activities, onActivityClick, formatRelativeTime }) {
     const [displayTimes, setDisplayTimes] = useState({});
 
     useEffect(() => {
-        const updateTimes = () => {
+        const refreshTimes = () => {
             const newTimes = {};
             activities.forEach((activity, index) => {
                 newTimes[index] = formatRelativeTime(activity.timestamp);
@@ -123,21 +126,22 @@ function ActivityTimeline({ activities, onActivityClick, formatRelativeTime }) {
             setDisplayTimes(newTimes);
         };
 
-        updateTimes();
-        const interval = setInterval(updateTimes, 60000); // Update every minute
-        return () => clearInterval(interval);
+        refreshTimes();
+        const timer = setInterval(refreshTimes, 30000);
+
+        return () => clearInterval(timer);
     }, [activities, formatRelativeTime]);
 
     return (
-        <div className="glass-panel">
+        <div className="glass-panel" style={{ padding: '14px' }}>
             <h3 style={{ 
-                margin: '0 0 16px 0',
-                fontSize: '16px',
+                margin: '0 0 10px 0',
+                fontSize: '15px',
                 fontWeight: '700',
                 color: 'var(--secondary-800)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
             }}>
                 <FiTrendingUp /> Recent Activity
             </h3>
@@ -151,25 +155,25 @@ function ActivityTimeline({ activities, onActivityClick, formatRelativeTime }) {
                         style={{
                             display: 'flex',
                             alignItems: 'flex-start',
-                            gap: '16px',
-                            marginBottom: index < activities.length - 1 ? '14px' : '0',
+                            gap: '10px',
+                            marginBottom: index < activities.length - 1 ? '10px' : '0',
                             animationDelay: `${index * 100}ms`,
                             cursor: activity.path ? 'pointer' : 'default',
                             borderRadius: '10px',
-                            padding: '8px',
+                            padding: '6px 7px',
                             transition: 'background 0.2s ease'
                         }}
                     >
                         {/* Timeline dot */}
                         <div style={{
-                            width: '34px',
-                            height: '34px',
+                            width: '28px',
+                            height: '28px',
                             borderRadius: '50%',
                             background: activity.color || 'var(--primary-500)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '16px',
+                            fontSize: '13px',
                             flexShrink: 0,
                             boxShadow: `0 4px 12px ${activity.color || 'var(--primary-500)'}30`
                         }}>
@@ -181,19 +185,21 @@ function ActivityTimeline({ activities, onActivityClick, formatRelativeTime }) {
                             <div style={{
                                 fontWeight: '600',
                                 color: 'var(--secondary-800)',
-                                marginBottom: '4px'
+                                marginBottom: '2px',
+                                fontSize: '13px'
                             }}>
                                 {activity.title}
                             </div>
                             <div style={{
-                                fontSize: '14px',
+                                fontSize: '12px',
                                 color: 'var(--secondary-600)',
-                                marginBottom: '4px'
+                                marginBottom: '2px',
+                                lineHeight: '1.35'
                             }}>
                                 {activity.description}
                             </div>
                             <div style={{
-                                fontSize: '12px',
+                                fontSize: '11px',
                                 color: 'var(--secondary-400)'
                             }}>
                                 {displayTimes[index] || activity.time}
@@ -311,26 +317,19 @@ function QuickActions({ onActionClick, stats }) {
             icon: <FiBookmark />, 
             color: 'var(--success-500)',
             path: '/job-matching/saved'
-        },
-        { 
-            id: 'notifications', 
-            label: 'Notifications', 
-            icon: <FiBell />, 
-            color: 'var(--warning-500)',
-            path: '/job-matching/notifications'
         }
     ];
     
     return (
-        <div className="glass-panel">
+        <div className="glass-panel" style={{ padding: '14px' }}>
             <h3 style={{ 
-                margin: '0 0 16px 0',
-                fontSize: '16px',
+                margin: '0 0 10px 0',
+                fontSize: '15px',
                 fontWeight: '700',
                 color: 'var(--secondary-800)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
             }}>
                 <FiTarget /> Quick Actions
             </h3>
@@ -338,7 +337,7 @@ function QuickActions({ onActionClick, stats }) {
             <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-                gap: '12px'
+                gap: '9px'
             }}>
                 {actions.map((action, index) => (
                     <button
@@ -346,10 +345,10 @@ function QuickActions({ onActionClick, stats }) {
                         className="btn-secondary animate-fade-in"
                         onClick={() => onActionClick(action.path)}
                         style={{
-                            padding: '10px 12px',
+                            padding: '8px 10px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '10px',
+                            gap: '8px',
                             justifyContent: 'flex-start',
                             textAlign: 'left',
                             border: `1px solid ${action.color}30`,
@@ -358,9 +357,9 @@ function QuickActions({ onActionClick, stats }) {
                         }}
                     >
                         <div style={{
-                            fontSize: '24px',
-                            width: '30px',
-                            height: '30px',
+                            fontSize: '18px',
+                            width: '24px',
+                            height: '24px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -370,15 +369,15 @@ function QuickActions({ onActionClick, stats }) {
                         }}>
                             {action.icon}
                         </div>
-                        <span style={{ fontWeight: '600' }}>{action.label}</span>
+                        <span style={{ fontWeight: '600', fontSize: '13px' }}>{action.label}</span>
                     </button>
                 ))}
             </div>
 
             <div style={{
-                marginTop: '12px',
+                marginTop: '10px',
                 borderTop: '1px solid var(--glass-border)',
-                paddingTop: '12px'
+                paddingTop: '10px'
             }}>
                 <div style={{
                     fontSize: '12px',
@@ -397,7 +396,11 @@ function QuickActions({ onActionClick, stats }) {
 }
 
 export default function Dashboard() {
+    const navigate = useNavigate();
+    const { user } = useAuth();
     const { ready, error: authError } = useEnsureDemoAuth();
+    const [dashboardSearch, setDashboardSearch] = useState('');
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [stats, setStats] = useState({
         totalApplicationsSent: 0,
         savedJobsCount: 0,
@@ -423,21 +426,24 @@ export default function Dashboard() {
         return `${days} day${days > 1 ? 's' : ''} ago`;
     };
     
-    useEffect(() => {
+    const loadDashboardData = useCallback(async ({ silent = false } = {}) => {
         if (!ready) return;
 
-        const load = async () => {
+        if (!silent) {
             setLoading(true);
-            setError('');
+        }
+
+        setError('');
+
+        try {
+            const [saved, recommended, notifications] = await Promise.all([
+                getSavedJobs(),
+                getRecommendedJobs(),
+                getNotifications().catch(() => [])
+            ]);
             try {
-                const [saved, recommended, notifications] = await Promise.all([
-                    getSavedJobs(),
-                    getRecommendedJobs(),
-                    getNotifications().catch(() => [])
-                ]);
-                
                 setStats({
-                    totalApplicationsSent: Math.floor(Math.random() * 12) + 1, // Mock data
+                    totalApplicationsSent: Math.floor(Math.random() * 12) + 1,
                     savedJobsCount: Array.isArray(saved) ? saved.length : 0,
                     recommendedJobsCount: Array.isArray(recommended) ? recommended.length : 0,
                     notificationsCount: Array.isArray(notifications) ? notifications.filter(n => !n.isRead).length : 0
@@ -498,25 +504,66 @@ export default function Dashboard() {
 
                 const dynamicActivities = activityItems
                     .sort((a, b) => b.sortAt - a.sortAt)
-                    .slice(0, 6)
+                    .slice(0, 4)
                     .map(({ sortAt, ...rest }) => rest);
 
                 setRecentActivities(dynamicActivities);
             } catch (e) {
                 setError(e?.response?.data?.message || 'Unable to load dashboard');
-            } finally {
+            }
+        } catch (e) {
+            setError(e?.response?.data?.message || 'Unable to load dashboard');
+        } finally {
+            if (!silent) {
                 setLoading(false);
+            }
+        }
+    }, [ready]);
+
+    useEffect(() => {
+        if (!ready) return;
+
+        loadDashboardData();
+
+        const intervalId = setInterval(() => {
+            loadDashboardData({ silent: true });
+        }, 20000);
+
+        const refreshOnFocus = () => {
+            if (document.visibilityState === 'visible') {
+                loadDashboardData({ silent: true });
             }
         };
 
-        load();
+        window.addEventListener('focus', refreshOnFocus);
+        document.addEventListener('visibilitychange', refreshOnFocus);
 
-        const interval = setInterval(load, 60000);
-        return () => clearInterval(interval);
-    }, [ready]);
+        return () => {
+            clearInterval(intervalId);
+            window.removeEventListener('focus', refreshOnFocus);
+            document.removeEventListener('visibilitychange', refreshOnFocus);
+        };
+    }, [ready, loadDashboardData]);
     
     const handleActionClick = (path) => {
-        window.location.href = path;
+        navigate(path);
+    };
+
+    const handleDashboardSearch = () => {
+        const q = dashboardSearch.trim();
+        if (!q) {
+            navigate('/job-matching/search');
+            return;
+        }
+
+        navigate(`/job-matching/search?q=${encodeURIComponent(q)}`);
+    };
+
+    const handleDashboardSearchKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleDashboardSearch();
+        }
     };
     
     return (
@@ -574,6 +621,100 @@ export default function Dashboard() {
                 
                 {ready && !loading && (
                     <>
+                        {/* Quick Search Bar */}
+                        <div style={{
+                            display: 'flex',
+                            gap: '8px',
+                            marginBottom: '20px',
+                            alignItems: 'center',
+                            flexWrap: isSearchFocused ? 'wrap' : 'nowrap'
+                        }}>
+                            <input
+                                type="text"
+                                value={dashboardSearch}
+                                onChange={(event) => setDashboardSearch(event.target.value)}
+                                onKeyDown={handleDashboardSearchKeyDown}
+                                onFocus={() => setIsSearchFocused(true)}
+                                onBlur={() => setIsSearchFocused(false)}
+                                placeholder="Search internships by title, skill, or company"
+                                style={{
+                                    flex: 1,
+                                    padding: '8px 10px',
+                                    borderRadius: '8px',
+                                    border: '1px solid var(--secondary-300)',
+                                    background: 'white',
+                                    color: 'var(--secondary-800)',
+                                    fontSize: '13px',
+                                    minWidth: '250px'
+                                }}
+                            />
+
+                            <button
+                                className="btn-primary"
+                                onClick={handleDashboardSearch}
+                                style={{
+                                    padding: '8px 12px',
+                                    fontSize: '12px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '5px',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                <FiSearch /> Search
+                            </button>
+
+                            <button
+                                className="btn-secondary"
+                                onClick={() => navigate('/job-matching/notifications')}
+                                style={{
+                                    width: '34px',
+                                    height: '34px',
+                                    padding: 0,
+                                    fontSize: '14px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative'
+                                }}
+                                title="Notifications"
+                                aria-label="Open notifications"
+                            >
+                                <FiBell />
+                                {stats.notificationsCount > 0 && (
+                                    <span
+                                        style={{
+                                            position: 'absolute',
+                                            top: '6px',
+                                            right: '6px',
+                                            width: '7px',
+                                            height: '7px',
+                                            borderRadius: '50%',
+                                            background: 'var(--error-500)'
+                                        }}
+                                    />
+                                )}
+                            </button>
+
+                            {isSearchFocused && (
+                                <button
+                                    className="btn-secondary"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        navigate('/job-matching/search');
+                                    }}
+                                    style={{
+                                        padding: '6px 10px',
+                                        fontSize: '12px',
+                                        animation: 'fadeIn 0.2s ease',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                >
+                                    Advanced
+                                </button>
+                            )}
+                        </div>
+
                         {/* Welcome Message */}
                         <div className="glass-panel animate-fade-in" style={{
                             textAlign: 'center',
@@ -660,11 +801,19 @@ export default function Dashboard() {
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                            gap: '18px',
-                            marginBottom: '20px'
+                            gap: '14px',
+                            marginBottom: '10px'
                         }}>
                             <QuickActions onActionClick={handleActionClick} stats={stats} />
                             <ActivityTimeline activities={recentActivities} onActivityClick={handleActionClick} formatRelativeTime={formatRelativeTime} />
+                        </div>
+
+                        <div style={{ marginTop: '-4px' }}>
+                            <AiCareerChat
+                                studentSkills={Array.isArray(user?.skills) ? user.skills : []}
+                                stats={stats}
+                                recentActivities={recentActivities}
+                            />
                         </div>
                     </>
                 )}

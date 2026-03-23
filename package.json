@@ -1,0 +1,14 @@
+{
+  "name": "careersync-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently -n BACKEND,FRONTEND -c yellow,cyan \"npm --prefix backend run dev\" \"npm --prefix frontend start\"",
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend start",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

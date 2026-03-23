@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import { FiBarChart2, FiTarget, FiSearch, FiStar, FiBookmark, FiBell, FiSettings, FiMoon, FiSun } from 'react-icons/fi';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 
 import './App.css';
 
@@ -22,55 +21,6 @@ export const useTheme = () => {
     }
     return context;
 };
-
-// Modern Navigation Component
-function Navigation() {
-    const location = useLocation();
-    const { theme, toggleTheme } = useTheme();
-    
-    const navItems = [
-        { path: '/job-matching/dashboard', label: 'Dashboard', icon: <FiBarChart2 /> },
-        { path: '/job-matching/opportunity', label: 'Opportunity Center', icon: <FiTarget /> },
-        { path: '/job-matching/search', label: 'Search Jobs', icon: <FiSearch /> },
-        { path: '/job-matching/recommended', label: 'Recommended', icon: <FiStar /> },
-        { path: '/job-matching/saved', label: 'Saved Jobs', icon: <FiBookmark /> },
-        { path: '/job-matching/notifications', label: 'Notifications', icon: <FiBell /> },
-        { path: '/job-matching/notifications/settings', label: 'Settings', icon: <FiSettings /> }
-    ];
-    
-    return (
-        <div className="nav-container">
-            <div className="nav-content">
-                <Link to="/job-matching/dashboard" className="nav-logo">
-                    CareerSync
-                </Link>
-                
-                <div className="nav-buttons">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className={`nav-button ${
-                                location.pathname === item.path ? 'active' : ''
-                            }`}
-                        >
-                            <span style={{ marginRight: '8px' }}>{item.icon}</span>
-                            <span className="nav-label">{item.label}</span>
-                        </Link>
-                    ))}
-                    
-                    <button
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-                    >
-                        {theme === 'light' ? <FiMoon /> : <FiSun />}
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 // Page transition wrapper
 function PageWrapper({ children, delay = 0 }) {
@@ -99,20 +49,14 @@ function App() {
         localStorage.setItem('careersync-theme', theme);
     }, [theme]);
     
-    const toggleTheme = () => {
-        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-    };
-    
     const themeContextValue = {
-        theme,
-        toggleTheme
+        theme
     };
     
     return (
         <ThemeContext.Provider value={themeContextValue}>
             <Router>
                 <div className="App">
-                    <Navigation />
                     
                     <Routes>
                         <Route path="/" element={<Navigate to="/job-matching" replace />} />

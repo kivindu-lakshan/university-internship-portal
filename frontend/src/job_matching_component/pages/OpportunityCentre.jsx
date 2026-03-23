@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FiRefreshCw, FiAlertCircle, FiArrowRight, FiTarget, FiZap, FiCalendar, FiAlertTriangle } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import { jobService } from '../../services/jobService';
 import ScoreGauge from '../components/ScoreGauge';
 import ActionQueue from '../components/ActionQueue';
@@ -9,6 +10,7 @@ import MomentumChart from '../components/MomentumChart';
 import './OpportunityCentre.css';
 
 function OpportunityCentre() {
+    const navigate = useNavigate();
     const [dashboard, setDashboard] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedOpportunity, setSelectedOpportunity] = useState(null);
@@ -17,9 +19,6 @@ function OpportunityCentre() {
 
     useEffect(() => {
         fetchDashboard();
-        // Auto-refresh every 5 minutes
-        const interval = setInterval(fetchDashboard, 5 * 60 * 1000);
-        return () => clearInterval(interval);
     }, []);
 
     const fetchDashboard = async () => {
@@ -72,6 +71,24 @@ function OpportunityCentre() {
 
     return (
         <div className="opportunity-centre-container">
+            <button
+                onClick={() => navigate('/job-matching')}
+                style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 12px',
+                    marginBottom: '16px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--primary-500)',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                }}
+            >
+                Back to Dashboard
+            </button>
             {/* Header */}
             <div className="opp-header">
                 <div>

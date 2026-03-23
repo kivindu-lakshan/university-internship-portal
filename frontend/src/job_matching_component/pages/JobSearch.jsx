@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiSearch, FiBriefcase, FiBarChart, FiStar, FiGrid, FiList, FiRotateCw, FiAlertTriangle } from 'react-icons/fi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, saveJob, searchJobs } from '../../services/jobService';
-import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
 // Results Header Component
 function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode, embedded = false }) {
@@ -118,7 +118,7 @@ function ResultsHeader({ total, query, sortBy, setSortBy, viewMode, setViewMode,
 }
 
 // Empty State Component
-function EmptyState({ query, hasFilters }) {
+function EmptyState({ query, hasFilters, onClearFilters, onViewRecommendations }) {
     return (
         <div className="glass-panel animate-fade-in" style={{
             textAlign: 'center',
@@ -156,12 +156,12 @@ function EmptyState({ query, hasFilters }) {
                     gap: '12px',
                     flexWrap: 'wrap'
                 }}>
-                    <button className="btn-secondary" onClick={() => window.location.reload()}>
+                    <button className="btn-secondary" onClick={onClearFilters}>
                         <FiRotateCw style={{ marginRight: '6px' }} /> Clear filters
                     </button>
                     <button 
                         className="btn-primary"
-                        onClick={() => window.location.href = '/job-matching/recommended'}
+                        onClick={onViewRecommendations}
                     >
                         <FiStar style={{ marginRight: '8px' }} /> View Recommendations
                     </button>
@@ -204,7 +204,13 @@ function LoadingState() {
 }
 
 export default function JobSearch() {
-    const [query, setQuery] = useState('');
+    const location = useLocation();
+    const navigate = useNavigate();
+    const queryFromUrl = useMemo(() => {
+        return new URLSearchParams(location.search).get('q') || '';
+    }, [location.search]);
+
+    const [query, setQuery] = useState(queryFromUrl);
     const [filters, setFilters] = useState({
         jobType: '',
         location: '',
@@ -267,6 +273,10 @@ export default function JobSearch() {
     }, [params]);
 
     useEffect(() => {
+        setQuery(queryFromUrl);
+    }, [queryFromUrl]);
+
+    useEffect(() => {
         loadJobs();
     }, [loadJobs]);
 
@@ -296,9 +306,37 @@ export default function JobSearch() {
         // Apply flow is owned by a different module; keep button present per spec.
     };
 
+    const handleClearFilters = () => {
+        setQuery('');
+        setFilters({
+            jobType: '',
+            location: '',
+            minSalary: '',
+            maxSalary: ''
+        });
+    };
+
     return (
         <div className="page">
             <div className="container">
+                <button
+                    onClick={() => navigate('/job-matching')}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        marginBottom: '16px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--primary-500)',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Back to Dashboard
+                </button>
                 {/* Search Interface */}
                 <div className="search-interface-grid" style={{
                     display: 'grid',
@@ -406,7 +444,12 @@ export default function JobSearch() {
                                 </div>
                             </>
                         ) : (
-                            <EmptyState query={query} hasFilters={hasActiveFilters} />
+                            <EmptyState
+                                query={query}
+                                hasFilters={hasActiveFilters}
+                                onClearFilters={handleClearFilters}
+                                onViewRecommendations={() => navigate('/job-matching/recommended')}
+                            />
                         )}
                     </>
                 )}

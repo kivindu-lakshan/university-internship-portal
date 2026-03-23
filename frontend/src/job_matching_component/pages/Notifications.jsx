@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { FiBell, FiCheck, FiSettings, FiSearch } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import NotificationItem from '../components/NotificationItem';
 import { getNotifications } from '../../services/notificationService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -128,6 +129,7 @@ function NotificationTabs({ activeTab, setActiveTab, counts }) {
 }
 
 export default function Notifications() {
+    const navigate = useNavigate();
     const { ready, error: authError } = useEnsureDemoAuth();
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -181,7 +183,7 @@ export default function Notifications() {
     };
 
     const handleSettings = () => {
-        window.location.href = '/job-matching/notifications/settings';
+        navigate('/job-matching/notifications/settings');
     };
 
     if (authError) {
@@ -227,6 +229,24 @@ export default function Notifications() {
     return (
         <div className="page">
             <div className="container">
+                <button
+                    onClick={() => navigate('/job-matching')}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        marginBottom: '16px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--primary-500)',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Back to Dashboard
+                </button>
                 <NotificationHeader 
                     unreadCount={counts.unread}
                     onMarkAllRead={handleMarkAllRead}
@@ -290,7 +310,7 @@ export default function Notifications() {
                             <div style={{ marginTop: '16px' }}>
                                 <button
                                     className="btn-secondary"
-                                    onClick={() => window.location.href = '/job-matching/search'}
+                                    onClick={() => navigate('/job-matching/search')}
                                     style={{ fontSize: '13px', padding: '8px 12px' }}
                                 >
                                     <FiSearch style={{ marginRight: '6px' }} /> Browse Jobs

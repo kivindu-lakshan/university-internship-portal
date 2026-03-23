@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FiSettings, FiCheck, FiMail, FiBell, FiArrowLeft } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
 
@@ -163,6 +164,7 @@ function StatusMessage({ saving, message, error }) {
 }
 
 export default function NotificationSettings() {
+    const navigate = useNavigate();
     const { ready, error: authError } = useEnsureDemoAuth();
     const [settings, setSettings] = useState({
         emailNotifications: true,
@@ -313,7 +315,7 @@ export default function NotificationSettings() {
                         )}
                         <button 
                             className="btn-secondary"
-                            onClick={() => window.location.href = '/job-matching/notifications'}
+                            onClick={() => navigate('/job-matching/notifications')}
                             style={{ 
                                 padding: '6px 12px', 
                                 fontSize: '13px',

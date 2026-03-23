@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { FiTarget, FiZap, FiStar, FiTrendingUp, FiInfo, FiSearch, FiBarChart, FiMonitor, FiChevronLeft, FiChevronRight, FiThumbsUp, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { getRecommendedJobs, getSavedJobs, saveJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -158,7 +159,7 @@ function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
 }
 
 // Empty Recommendations State
-function EmptyRecommendationsState() {
+function EmptyRecommendationsState({ onBrowseAllJobs, onViewDashboard }) {
     return (
         <div className="glass-panel animate-fade-in" style={{
             textAlign: 'center',
@@ -190,13 +191,13 @@ function EmptyRecommendationsState() {
             }}>
                 <button 
                     className="btn-primary"
-                    onClick={() => window.location.href = '/job-matching/search'}
+                    onClick={onBrowseAllJobs}
                 >
                     <FiSearch style={{ marginRight: '8px' }} /> Browse All Jobs
                 </button>
                 <button 
                     className="btn-secondary"
-                    onClick={() => window.location.href = '/job-matching/dashboard'}
+                    onClick={onViewDashboard}
                 >
                     <FiBarChart style={{ marginRight: '8px' }} /> View Dashboard
                 </button>
@@ -238,6 +239,7 @@ function LoadingState() {
 }
 
 export default function RecommendedJobs() {
+    const navigate = useNavigate();
     const { ready, error: authError } = useEnsureDemoAuth();
     const [jobs, setJobs] = useState([]);
     const [savedJobIds, setSavedJobIds] = useState(() => new Set());
@@ -322,9 +324,46 @@ export default function RecommendedJobs() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleRetry = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const [recommended, saved] = await Promise.all([
+                getRecommendedJobs(),
+                getSavedJobs().catch(() => [])
+            ]);
+
+            setJobs(Array.isArray(recommended) ? recommended : []);
+            const ids = new Set((saved || []).map((s) => String(s.jobId?._id || s.jobId)));
+            setSavedJobIds(ids);
+        } catch (e) {
+            setError(e?.response?.data?.message || 'Unable to load recommendations');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="page">
             <div className="container">
+                <button
+                    onClick={() => navigate('/job-matching')}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        marginBottom: '16px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--primary-500)',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Back to Dashboard
+                </button>
                 <div className="page-header">
                     <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <FiStar /> AI Recommendations
@@ -361,7 +400,7 @@ export default function RecommendedJobs() {
                         <div style={{ fontWeight: '600' }}>{error}</div>
                         <button 
                             className="btn-secondary" 
-                            onClick={() => window.location.reload()}
+                            onClick={handleRetry}
                             style={{ marginTop: '16px' }}
                         >
                             <FiRotateCw style={{ marginRight: '6px' }} /> Retry
@@ -431,7 +470,10 @@ export default function RecommendedJobs() {
                                 )}
                             </>
                         ) : (
-                            <EmptyRecommendationsState />
+                            <EmptyRecommendationsState
+                                onBrowseAllJobs={() => navigate('/job-matching/search')}
+                                onViewDashboard={() => navigate('/job-matching/dashboard')}
+                            />
                         )}
                     </>
                 )}

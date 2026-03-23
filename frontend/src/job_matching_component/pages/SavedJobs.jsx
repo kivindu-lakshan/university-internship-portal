@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { FiBookmark, FiTarget, FiSearch, FiTrash2, FiZap, FiStar, FiBriefcase, FiCalendar, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, removeSavedJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
@@ -204,7 +205,7 @@ function SavedJobsToolbar({ onSearch, onSort, sortBy, onBulkAction, selectedCoun
 }
 
 // Empty Saved Jobs State
-function EmptySavedJobsState() {
+function EmptySavedJobsState({ onBrowseJobs, onViewRecommendations }) {
     return (
         <div className="glass-panel animate-fade-in" style={{
             textAlign: 'center',
@@ -236,13 +237,13 @@ function EmptySavedJobsState() {
             }}>
                 <button 
                     className="btn-primary"
-                    onClick={() => window.location.href = '/job-matching/search'}
+                    onClick={onBrowseJobs}
                 >
                     <FiSearch style={{ marginRight: '8px' }} /> Browse Jobs
                 </button>
                 <button 
                     className="btn-secondary"
-                    onClick={() => window.location.href = '/job-matching/recommended'}
+                    onClick={onViewRecommendations}
                 >
                     <FiStar style={{ marginRight: '8px' }} /> View Recommendations
                 </button>
@@ -284,6 +285,7 @@ function LoadingState() {
 }
 
 export default function SavedJobs() {
+    const navigate = useNavigate();
     const { ready, error: authError } = useEnsureDemoAuth();
     const [savedJobs, setSavedJobs] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -383,6 +385,24 @@ export default function SavedJobs() {
     return (
         <div className="page">
             <div className="container">
+                <button
+                    onClick={() => navigate('/job-matching')}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        marginBottom: '16px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--primary-500)',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Back to Dashboard
+                </button>
                 <div className="page-header">
                     <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <FiBookmark /> Saved Jobs
@@ -517,7 +537,10 @@ export default function SavedJobs() {
                                 )}
                             </>
                         ) : (
-                            <EmptySavedJobsState />
+                            <EmptySavedJobsState
+                                onBrowseJobs={() => navigate('/job-matching/search')}
+                                onViewRecommendations={() => navigate('/job-matching/recommended')}
+                            />
                         )}
                     </>
                 )}
