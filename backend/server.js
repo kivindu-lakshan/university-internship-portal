@@ -14,10 +14,26 @@ connectDB();
 // Initialize Express app
 const app = express();
 
+const configuredOrigins = (process.env.CLIENT_URL || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
 // Middleware
 app.use(
     cors({
-        origin: process.env.CLIENT_URL || true,
+        origin: (origin, callback) => {
+            if (!origin) {
+                return callback(null, true);
+            }
+
+            const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+            if (isLocalhost || configuredOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(new Error(`CORS blocked for origin: ${origin}`));
+        },
         credentials: true
     })
 );

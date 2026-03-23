@@ -5,7 +5,8 @@ const {
     verifyEmail,
     loginUser,
     demoLogin,
-    getMe
+    getMe,
+    updateSettings
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -17,5 +18,6 @@ router.post('/demo-login', demoLogin);
 
 // Private routes (need to be logged in)
 router.get('/me', protect, getMe);
+router.put('/settings', protect, updateSettings);
 
 module.exports = router;

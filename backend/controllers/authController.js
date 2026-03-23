@@ -157,6 +157,37 @@ const getMe = async (req, res) => {
     }
 };
 
+// @desc    Update current user notification settings
+// @route   PUT /api/auth/settings
+// @access  Private
+const updateSettings = async (req, res) => {
+    try {
+        const incoming = req.body?.notificationSettings || {};
+
+        const nextSettings = {
+            emailNotifications: Boolean(incoming.emailNotifications),
+            newJobAlerts: Boolean(incoming.newJobAlerts),
+            deadlineReminders: Boolean(incoming.deadlineReminders),
+            applicationUpdates: Boolean(incoming.applicationUpdates)
+        };
+
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.notificationSettings = nextSettings;
+        await user.save();
+
+        res.status(200).json({
+            message: 'Settings updated successfully',
+            notificationSettings: user.notificationSettings
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 // @desc    Demo login (dev only)
 // @route   POST /api/auth/demo-login
 // @access  Public (dev only)
@@ -213,4 +244,4 @@ const demoLogin = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, verifyEmail, loginUser, demoLogin, getMe };
+module.exports = { registerUser, verifyEmail, loginUser, demoLogin, getMe, updateSettings };

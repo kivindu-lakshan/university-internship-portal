@@ -181,7 +181,7 @@ export default function Notifications() {
     };
 
     const handleSettings = () => {
-        window.location.href = '/job-matching/notification-settings';
+        window.location.href = '/job-matching/notifications/settings';
     };
 
     if (authError) {

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
+    timeout: 10000,
 });
 
 // Automatically attach token to every request if it exists
@@ -24,7 +25,6 @@ api.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             localStorage.removeItem('token');
-            window.location.href = '/job-matching/dashboard';
         }
         return Promise.reject(error);
     }

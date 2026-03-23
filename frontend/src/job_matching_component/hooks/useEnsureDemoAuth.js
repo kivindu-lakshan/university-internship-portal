@@ -27,7 +27,7 @@ export default function useEnsureDemoAuth() {
             } catch (e) {
                 if (!cancelled) {
                     setError(e?.response?.data?.message || 'Unable to start demo session');
-                    setReady(false);
+                    setReady(true);
                 }
             }
         };
