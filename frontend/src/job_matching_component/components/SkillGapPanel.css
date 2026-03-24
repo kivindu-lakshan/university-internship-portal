@@ -63,7 +63,7 @@
 
 .summary-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-500) 0%, var(--accent-600) 100%);
+    background: var(--primary-500);
     border-radius: 3px;
     transition: width 0.8s ease;
 }
@@ -265,7 +265,7 @@
 
 .quick-link {
     padding: var(--space-2) var(--space-3);
-    background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+    background: var(--primary-600);
     color: white;
     border: none;
     border-radius: 6px;
@@ -282,7 +282,7 @@
 
 /* Learning Path */
 .learning-path {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    background: rgba(37, 99, 235, 0.1);
     border: 1px solid rgba(124, 58, 237, 0.2);
     border-radius: 8px;
     padding: var(--space-4);
@@ -312,7 +312,7 @@
     min-width: 32px;
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
+    background: var(--primary-600);
     color: white;
     border-radius: 50%;
     display: flex;

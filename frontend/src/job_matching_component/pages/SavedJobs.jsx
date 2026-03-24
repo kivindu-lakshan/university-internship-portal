@@ -1,95 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FiBookmark, FiTarget, FiSearch, FiTrash2, FiZap, FiStar, FiBriefcase, FiCalendar, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
+import { FiBookmark, FiSearch, FiTrash2, FiZap, FiStar, FiAlertTriangle, FiRotateCw } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { getSavedJobs, removeSavedJob } from '../../services/jobService';
 import useEnsureDemoAuth from '../hooks/useEnsureDemoAuth';
-
-// Saved Jobs Statistics Component
-function SavedJobsStats({ jobs }) {
-    const stats = useMemo(() => {
-        if (!jobs || jobs.length === 0) return null;
-
-        const totalJobs = jobs.length;
-        const companies = new Set(jobs.map(saved => saved.jobId?.company).filter(Boolean)).size;
-        const recentlySaved = jobs.filter(saved => {
-            const savedDate = new Date(saved.dateSaved || saved.createdAt);
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            return savedDate > oneWeekAgo;
-        }).length;
-
-        const jobTypes = jobs.reduce((acc, saved) => {
-            const type = saved.jobId?.jobType || 'Unknown';
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-        }, {});
-
-        const topJobType = Object.entries(jobTypes).sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
-
-        return {
-            totalJobs,
-            companies,
-            recentlySaved,
-            topJobType
-        };
-    }, [jobs]);
-
-    if (!stats) return null;
-
-    const statCards = [
-        { label: 'Total Saved', value: stats.totalJobs, icon: <FiBookmark />, color: 'var(--primary-500)' },
-        { label: 'Companies', value: stats.companies, icon: <FiBriefcase />, color: 'var(--accent-500)' },
-        { label: 'Saved This Week', value: stats.recentlySaved, icon: <FiCalendar />, color: 'var(--success-500)' },
-        { label: 'Top Category', value: stats.topJobType, icon: <FiTarget />, color: 'var(--warning-500)' }
-    ];
-
-    return (
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '20px',
-            marginBottom: '32px'
-        }}>
-            {statCards.map((stat, index) => (
-                <div
-                    key={stat.label}
-                    className="modern-card animate-fade-in"
-                    style={{
-                        textAlign: 'center',
-                        background: `linear-gradient(135deg, ${stat.color}15, ${stat.color}05)`,
-                        border: `1px solid ${stat.color}30`,
-                        animationDelay: `${index * 100}ms`
-                    }}
-                >
-                    <div style={{
-                        fontSize: '32px',
-                        marginBottom: '12px'
-                    }}>
-                        {stat.icon}
-                    </div>
-                    <div style={{
-                        fontSize: '24px',
-                        fontWeight: '800',
-                        color: stat.color,
-                        marginBottom: '8px'
-                    }}>
-                        {stat.value}
-                    </div>
-                    <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: 'var(--secondary-600)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                    }}>
-                        {stat.label}
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
 
 // Search and Filter Component
 function SavedJobsToolbar({ onSearch, onSort, sortBy, onBulkAction, selectedCount }) {
@@ -407,9 +321,6 @@ export default function SavedJobs() {
                     <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <FiBookmark /> Saved Jobs
                     </h1>
-                    <p className="page-subtitle">
-                        Your curated collection of interesting opportunities
-                    </p>
                 </div>
 
                 {authError && (
@@ -464,8 +375,6 @@ export default function SavedJobs() {
                     <>
                         {savedJobs.length > 0 ? (
                             <>
-                                <SavedJobsStats jobs={savedJobs} />
-
                                 <SavedJobsToolbar
                                     onSearch={setSearchQuery}
                                     onSort={setSortBy}

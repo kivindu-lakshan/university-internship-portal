@@ -100,7 +100,7 @@ function ScoreGauge({ opportunity }) {
                                 className="component-fill"
                                 style={{ 
                                     width: `${opportunity.skillMatchScore}%`,
-                                    background: 'linear-gradient(90deg, var(--primary-500) 0%, var(--primary-600) 100%)'
+                                    background: 'var(--primary-500)'
                                 }}
                             ></div>
                         </div>
@@ -116,7 +116,7 @@ function ScoreGauge({ opportunity }) {
                                 className="component-fill"
                                 style={{ 
                                     width: `${opportunity.profileCompletenessScore}%`,
-                                    background: 'linear-gradient(90deg, var(--accent-500) 0%, var(--accent-600) 100%)'
+                                    background: 'var(--accent-500)'
                                 }}
                             ></div>
                         </div>
@@ -132,7 +132,7 @@ function ScoreGauge({ opportunity }) {
                                 className="component-fill"
                                 style={{ 
                                     width: `${opportunity.deadlineProximityScore}%`,
-                                    background: 'linear-gradient(90deg, var(--success-500) 0%, #059669 100%)'
+                                    background: 'var(--success-500)'
                                 }}
                             ></div>
                         </div>
@@ -148,7 +148,7 @@ function ScoreGauge({ opportunity }) {
                                 className="component-fill"
                                 style={{ 
                                     width: `${opportunity.applicationBehaviorScore}%`,
-                                    background: 'linear-gradient(90deg, var(--warning-500) 0%, #d97706 100%)'
+                                    background: 'var(--warning-500)'
                                 }}
                             ></div>
                         </div>

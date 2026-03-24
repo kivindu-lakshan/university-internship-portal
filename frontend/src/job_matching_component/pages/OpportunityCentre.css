@@ -1,7 +1,7 @@
 /* Opportunity Centre Container */
 .opportunity-centre-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+    background: var(--primary-100);
     padding: var(--space-5) var(--space-5);
     margin-top: 80px;
 }
@@ -64,10 +64,7 @@
 .opp-title {
     font-size: var(--text-2xl);
     font-weight: 800;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
     margin-bottom: var(--space-2);
     display: flex;
     align-items: center;
@@ -192,10 +189,7 @@
     font-size: var(--text-2xl);
     font-weight: 800;
     margin-bottom: var(--space-2);
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
 }
 
 .stat-label {

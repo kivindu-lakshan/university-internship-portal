@@ -23,10 +23,7 @@
 .nav-logo {
     font-size: var(--text-xl);
     font-weight: 800;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
     text-decoration: none;
 }
 
@@ -66,7 +63,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary-500), var(--accent-500));
+    background: var(--primary-500);
 }
 
 /* Theme Toggle */
@@ -111,10 +108,7 @@
 .page-title {
     font-size: clamp(2rem, 4vw, 3.5rem);
     font-weight: 800;
-    background: linear-gradient(135deg, var(--secondary-800) 0%, var(--primary-600) 50%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--secondary-800);
     margin-bottom: var(--space-4);
     line-height: 1.1;
 }
@@ -128,10 +122,7 @@
 }
 
 [data-theme="dark"] .page-title {
-    background: linear-gradient(135deg, var(--secondary-100) 0%, var(--primary-400) 50%, var(--accent-400) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--secondary-100);
 }
 
 [data-theme="dark"] .page-subtitle {
@@ -158,9 +149,8 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--primary-400), transparent);
-    opacity: 0.6;
-    animation: shimmer 2s linear infinite;
+    background: var(--primary-300);
+    opacity: 0.4;
 }
 
 @keyframes shimmer {
@@ -188,13 +178,13 @@
 }
 
 .modern-card::before {
-    content: '';
+    content: none;
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, var(--primary-500) 0%, transparent 70%);
+    background: transparent;
     opacity: 0;
     transition: opacity var(--transition-slow);
     z-index: -1;
@@ -283,7 +273,7 @@
 }
 
 .skill-tag {
-    background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+    background: var(--primary-600);
     color: white;
     padding: var(--space-1) var(--space-3);
     border-radius: 20px;
@@ -309,7 +299,7 @@
 
 /* Modern Buttons */
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    background: var(--primary-600);
     color: white;
     border: none;
     padding: var(--space-3) var(--space-6);
@@ -324,13 +314,13 @@
 }
 
 .btn-primary::before {
-    content: '';
+    content: none;
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: transparent;
     transition: left var(--transition-normal);
 }
 
@@ -400,12 +390,8 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: conic-gradient(
-        from 0deg,
-        var(--primary-500) 0%,
-        var(--accent-500) var(--match-percent, 0%),
-        var(--secondary-200) var(--match-percent, 0%)
-    );
+    background: var(--secondary-200);
+    border: 4px solid var(--primary-500);
     animation: rotateIn 1s ease-out;
 }
 
@@ -529,10 +515,7 @@
 
 /* Utility Classes */
 .text-gradient {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
 }
 
 .spacer-4 { height: var(--space-4); }
@@ -542,8 +525,7 @@
 
 /* Loading States */
 .skeleton {
-    background: linear-gradient(90deg, var(--secondary-200) 25%, var(--secondary-100) 50%, var(--secondary-200) 75%);
-    background-size: 200% 100%;
+    background: var(--secondary-200);
     animation: loading 2s infinite;
     border-radius: 8px;
 }
@@ -586,5 +568,85 @@
 
 .spacer12 {
 	height: 12px;
+}
+
+.recommendations-page .page-header {
+    margin-bottom: 14px;
+}
+
+.recommendations-page .page-title {
+    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+    margin-bottom: var(--space-2);
+}
+
+.recommendations-page .page-subtitle {
+    font-size: var(--text-base);
+    line-height: 1.4;
+}
+
+.recommendations-page .recommendations-grid {
+    margin: var(--space-4) 0;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.recommendations-page .modern-card {
+    border-radius: 14px;
+    padding: var(--space-4);
+}
+
+.recommendations-page .card-header {
+    margin-bottom: var(--space-3);
+}
+
+.recommendations-page .card-title {
+    font-size: var(--text-base);
+    margin-bottom: 4px;
+}
+
+.recommendations-page .card-company {
+    font-size: var(--text-sm);
+}
+
+.recommendations-page .card-meta {
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+    padding: var(--space-3);
+}
+
+.recommendations-page .card-meta-item {
+    font-size: 12px;
+}
+
+.recommendations-page .card-skills {
+    gap: 6px;
+    margin: var(--space-3) 0;
+}
+
+.recommendations-page .skill-tag {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    padding: 4px 8px;
+}
+
+.recommendations-page .card-actions {
+    margin-top: var(--space-4);
+    gap: var(--space-2);
+}
+
+.recommendations-page .btn-primary,
+.recommendations-page .btn-secondary {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 10px;
+}
+
+.recommendations-page .match-indicator {
+    width: 48px;
+    height: 48px;
+}
+
+.recommendations-page .match-text {
+    font-size: 11px;
 }
 

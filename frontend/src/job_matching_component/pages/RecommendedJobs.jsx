@@ -41,8 +41,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             justifyContent: 'center',
             alignItems: 'center',
             gap: '8px',
-            marginTop: '32px',
-            paddingBottom: '32px'
+            marginTop: '18px',
+            paddingBottom: '20px'
         }}>
             <button
                 className={`btn-outline ${currentPage === 1 ? 'disabled' : ''}`}
@@ -119,10 +119,10 @@ function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
     return (
         <div style={{
             display: 'flex',
-            gap: '12px',
-            marginBottom: '24px',
+            gap: '8px',
+            marginBottom: '14px',
             overflowX: 'auto',
-            paddingBottom: '8px'
+            paddingBottom: '4px'
         }}>
             {categories.map(category => (
                 <button
@@ -132,8 +132,8 @@ function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
                     style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '8px 14px',
                         whiteSpace: 'nowrap',
                         background: activeCategory === category.id ? 'var(--primary-500)' : 'transparent',
                         color: activeCategory === category.id ? 'white' : 'var(--secondary-700)',
@@ -144,10 +144,10 @@ function RecommendationCategories({ jobs, activeCategory, setActiveCategory }) {
                     <span>{category.icon}</span>
                     <span style={{ fontWeight: '600' }}>{category.label}</span>
                     <div style={{
-                        padding: '2px 8px',
+                        padding: '2px 6px',
                         borderRadius: '12px',
                         background: activeCategory === category.id ? 'rgba(255,255,255,0.2)' : 'var(--secondary-200)',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700'
                     }}>
                         {category.count}
@@ -271,12 +271,6 @@ export default function RecommendedJobs() {
 
     const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
 
-    const averageMatch = useMemo(() => {
-        if (!jobs || jobs.length === 0) return 0;
-        const total = jobs.reduce((sum, job) => sum + (job.matchPercentage || 0), 0);
-        return Math.round(total / jobs.length);
-    }, [jobs]);
-
     useEffect(() => {
         if (!ready) return;
         const load = async () => {
@@ -344,7 +338,7 @@ export default function RecommendedJobs() {
     };
 
     return (
-        <div className="page">
+        <div className="page recommendations-page">
             <div className="container">
                 <button
                     onClick={() => navigate('/job-matching')}
@@ -364,7 +358,7 @@ export default function RecommendedJobs() {
                 >
                     Back to Dashboard
                 </button>
-                <div className="page-header">
+                <div className="page-header" style={{ marginBottom: '16px' }}>
                     <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <FiStar /> AI Recommendations
                     </h1>
@@ -433,7 +427,7 @@ export default function RecommendedJobs() {
 
                                 {paginatedJobs.length > 0 ? (
                                     <>
-                                        <div className="modern-grid">
+                                        <div className="modern-grid recommendations-grid">
                                             {paginatedJobs.map((job, index) => (
                                                 <div
                                                     key={job._id}

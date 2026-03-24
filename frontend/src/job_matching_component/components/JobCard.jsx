@@ -104,7 +104,6 @@ export default function JobCard({
     isSaved,
     showRemove
 }) {
-    const [isHovered, setIsHovered] = useState(false);
     const [isApplying, setIsApplying] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     
@@ -129,11 +128,8 @@ export default function JobCard({
     return (
         <div 
             className="modern-card"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             style={{
-                transform: isHovered ? 'translateY(-4px) scale(1.02)' : 'translateY(0) scale(1)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                transition: 'all 0.2s ease'
             }}
         >
             <div className="card-header">
@@ -178,7 +174,7 @@ export default function JobCard({
                     {isApplying ? (
                         <><FiSend style={{ marginRight: '4px' }} /> Applying...</>
                     ) : (
-                        <><FiEdit3 style={{ marginRight: '4px' }} /> Apply Now</>
+                        <><FiEdit3 style={{ marginRight: '4px' }} /> Apply</>
                     )}
                 </button>
                 
@@ -213,7 +209,7 @@ export default function JobCard({
                         ) : isSaved ? (
                             <><FiCheck style={{ marginRight: '4px' }} /> Saved</>
                         ) : (
-                            <><FiBookmark style={{ marginRight: '4px' }} /> Save Job</>
+                            <><FiBookmark style={{ marginRight: '4px' }} /> Save</>
                         )}
                     </button>
                 )}

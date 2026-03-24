@@ -76,7 +76,7 @@ function SalaryRangeSlider({ minValue, maxValue, onChange }) {
                 <div style={{
                     position: 'absolute',
                     height: '6px',
-                    background: 'linear-gradient(90deg, var(--primary-500), var(--accent-500))',
+                    background: 'var(--primary-500)',
                     borderRadius: '3px',
                     left: `${(localMin / 3000) * 100}%`,
                     width: `${((localMax - localMin) / 3000) * 100}%`

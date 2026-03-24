@@ -59,10 +59,7 @@
     font-size: var(--text-2xl);
     font-weight: 800;
     margin: 0;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
 }
 
 .stat-label {
@@ -145,15 +142,15 @@
 }
 
 .applications-bar {
-    background: linear-gradient(180deg, var(--primary-500) 0%, var(--primary-600) 100%);
+    background: var(--primary-500);
 }
 
 .interviews-bar {
-    background: linear-gradient(180deg, var(--accent-500) 0%, var(--accent-600) 100%);
+    background: var(--accent-500);
 }
 
 .offers-bar {
-    background: linear-gradient(180deg, var(--success-500) 0%, #059669 100%);
+    background: var(--success-500);
 }
 
 .empty-bar {

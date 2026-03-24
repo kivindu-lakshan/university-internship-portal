@@ -45,7 +45,7 @@ function StatCard({ icon, label, value, trend, color = 'var(--primary-500)', del
             className={`modern-card ${isVisible ? 'animate-fade-in' : ''}`}
             style={{ 
                 textAlign: 'center',
-                background: `linear-gradient(135deg, ${color}15, ${color}05)`,
+                background: `${color}12`,
                 border: `1px solid ${color}30`,
                 position: 'relative',
                 overflow: 'hidden',
@@ -718,7 +718,7 @@ export default function Dashboard() {
                         {/* Welcome Message */}
                         <div className="glass-panel animate-fade-in" style={{
                             textAlign: 'center',
-                            background: 'linear-gradient(135deg, var(--primary-500)15, var(--accent-500)15)',
+                            background: 'var(--primary-100)',
                             border: '1px solid var(--primary-300)30',
                             padding: '16px',
                             marginBottom: '20px'

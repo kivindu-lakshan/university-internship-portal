@@ -105,10 +105,7 @@
 .prediction-value {
     font-size: var(--text-lg);
     font-weight: 800;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
     margin: 0;
 }
 
@@ -140,10 +137,7 @@
 
 .component-percent {
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
 }
 
 .component-progress {

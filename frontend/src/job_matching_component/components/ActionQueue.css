@@ -140,7 +140,7 @@
 }
 
 .impact-badge {
-    background: linear-gradient(135deg, var(--primary-500) 0%, var(--accent-500) 100%);
+    background: var(--primary-500);
     color: white;
     padding: var(--space-1) var(--space-3);
     border-radius: 20px;
@@ -189,7 +189,7 @@
 }
 
 .action-button {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    background: var(--primary-600);
     color: white;
     border: none;
     padding: var(--space-2) var(--space-4);
@@ -230,17 +230,14 @@
 }
 
 .summary-value {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-600);
     font-size: var(--text-lg);
     font-weight: 800;
 }
 
 /* What-If Simulator */
 .whatif-simulator {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    background: rgba(37, 99, 235, 0.1);
     border: 1px solid rgba(124, 58, 237, 0.2);
     border-radius: 8px;
     padding: var(--space-4);
