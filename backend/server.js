@@ -57,7 +57,19 @@ initializeDeadlineScheduler();
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Deadline reminder system activated`);
+const server = app.listen(PORT, () => {
+    console.log('\n═══════════════════════════════════════════');
+    console.log(`✅ Backend Server Ready on port ${PORT}`);
+    console.log(`📡 API Base URL: http://localhost:${PORT}/api`);
+    console.log('═══════════════════════════════════════════\n');
+    initializeDeadlineScheduler();
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
 });
