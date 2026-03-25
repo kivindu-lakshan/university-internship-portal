@@ -1,79 +1,25 @@
-import React from 'react';
-import HomePage from './pages/HomePage';
-import RegisterPage from './pages/auth/RegisterPage';
-import LoginPage from './pages/auth/LoginPage';
-import VerifyEmailPage from './pages/auth/VerifyEmailPage';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import StudentDashboard from './pages/student/StudentDashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import JobDetailsPage from './pages/student/JobDetailsPage';
-import ApplicationFormPage from './pages/student/ApplicationFormPage';
-import MyApplicationsPage from './pages/student/MyApplicationsPage';
-import StudentProfilePage from './pages/student/StudentProfilePage';
-import PublicRoute from './components/PublicRoute';
+import React from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { LoginPage } from './components/auth/LoginPage'
+import { RegisterPage } from './components/auth/RegisterPage'
+import { VerifyEmailPage } from './components/auth/VerifyEmailPage'
+import HomePage from './pages/HomePage'
 
 function App() {
-    return (
-        <Router>
-            <div className="App">
-                <Routes>
-                    {/* Auth Routes */}
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={
-                        <PublicRoute>
-                            <LoginPage />
-                        </PublicRoute>
-                    } />
-                    <Route path="/register" element={
-                        <PublicRoute>
-                            <RegisterPage />
-                        </PublicRoute>
-                    } />
-                    <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-                    {/* Student Routes */}
-                    <Route path="/student/dashboard" element={
-                        <ProtectedRoute allowedRoles={['student']}>
-                            <StudentDashboard />
-                        </ProtectedRoute>
-                    } />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+        <Route path="/home" element={<HomePage />} />
 
-                    <Route path="/student/jobs/:id" element={
-                        <ProtectedRoute allowedRoles={['student']}>
-                            <JobDetailsPage />
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/student/apply/:jobId" element={
-                        <ProtectedRoute allowedRoles={['student']}>
-                            <ApplicationFormPage />
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/student/applications" element={
-                        <ProtectedRoute allowedRoles={['student']}>
-                            <MyApplicationsPage />
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/student/profile" element={
-                        <ProtectedRoute allowedRoles={['student']}>
-                            <StudentProfilePage />
-                        </ProtectedRoute>
-                    } />
-
-                    {/* Employer Routes */}
-                    <Route path="/employer/dashboard" element={<h1>Employer Dashboard</h1>} />
-
-                    {/* Admin Routes */}
-                    <Route path="/admin/dashboard" element={<h1>Admin Dashboard</h1>} />
-
-                    {/* 404 Route */}
-                    <Route path="*" element={<h1>404 - Page Not Found</h1>} />
-                </Routes>
-            </div>
-        </Router>
-    );
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App
