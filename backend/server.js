@@ -45,6 +45,37 @@ app.get('/', (req, res) => {
     res.json({ message: 'University Internship Portal API is running' });
 });
 
+// Dev helper: list registered routes (avoid enabling in production)
+if (process.env.NODE_ENV !== 'production') {
+    app.get('/__debug/routes', (req, res) => {
+        const routes = [];
+
+        const addStack = (stack, prefix = '') => {
+            if (!Array.isArray(stack)) return;
+
+            stack.forEach((layer) => {
+                if (!layer) return;
+
+                if (layer.route && layer.route.path) {
+                    const methods = Object.keys(layer.route.methods || {})
+                        .filter((m) => layer.route.methods[m])
+                        .map((m) => m.toUpperCase());
+                    routes.push({ methods, path: `${prefix}${layer.route.path}` });
+                    return;
+                }
+
+                if (layer.name === 'router' && layer.handle && Array.isArray(layer.handle.stack)) {
+                    // Express stores the mount path in layer.regexp; keep it simple and just recurse.
+                    addStack(layer.handle.stack, prefix);
+                }
+            });
+        };
+
+        addStack(app._router?.stack);
+        res.json({ count: routes.length, routes });
+    });
+}
+
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./job_matching_component/routes/jobRoutes'));

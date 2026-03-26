@@ -73,6 +73,10 @@ async function startFrontend() {
     if (isReady) {
         console.log('🌐 Starting frontend on port 3010...\n');
         const frontendProcess = spawn('npm', ['--prefix', 'frontend', 'start'], {
+            env: {
+                ...process.env,
+                PORT: '3010'
+            },
             stdio: 'inherit',
             shell: true,
             cwd: path.resolve(__dirname)

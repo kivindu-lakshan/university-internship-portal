@@ -15,6 +15,17 @@ export default function useEnsureDemoAuth() {
                 return;
             }
 
+            // Only try demo-login when explicitly enabled (or in local dev).
+            // This prevents the whole dashboard from failing when the endpoint is disabled/removed.
+            const demoEnabled =
+                String(process.env.REACT_APP_ENABLE_DEMO_LOGIN || '').toLowerCase() === 'true' ||
+                (process.env.NODE_ENV !== 'production');
+
+            if (!demoEnabled) {
+                if (!cancelled) setReady(true);
+                return;
+            }
+
             try {
                 const res = await api.post('/auth/demo-login');
                 const token = res?.data?.token;
@@ -26,6 +37,12 @@ export default function useEnsureDemoAuth() {
                 throw new Error('Missing token');
             } catch (e) {
                 if (!cancelled) {
+                    // If demo-login isn't available (404), proceed without a token.
+                    if (e?.response?.status === 404) {
+                        setReady(true);
+                        return;
+                    }
+
                     setError(e?.response?.data?.message || 'Unable to start demo session');
                     setReady(true);
                 }
